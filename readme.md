@@ -24,7 +24,7 @@ yarn dev calendar.ics
 
 ## Why convert to CSV?
 
-Originally, this script just generated a second iCalendar file using `ical-generator` (see [this old commit](https://github.com)), but upon importing in Google Calendar, emoji were being incorrectly interpreted:
+Originally, this script just generated a second iCalendar file using `ical-generator` (see [this old commit](https://github.com/upleveled/ical-to-csv-move-events/commit/60a116a9c4bcafdd48a70301c3eef267c306a2e6)), but upon importing in Google Calendar, emoji were being incorrectly interpreted:
 
 <img src=".readme/google-calendar-broken-emoji.png" alt="Screenshot of Google Calendar entries showing broken emoji">
 
