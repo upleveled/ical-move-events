@@ -1,13 +1,11 @@
-import { existsSync } from 'fs';
+import { existsSync, writeFileSync } from 'fs';
 import icalParser from 'node-ical';
-import icalGenerator from 'ical-generator';
+import fastCsvFormat from '@fast-csv/format';
 
 // Because of the Node.js 14 ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
 import dateFns from 'date-fns';
-const { startOfDay, min, differenceInDays, add } = dateFns;
-
-const calendar = icalGenerator();
+const { startOfDay, min, differenceInDays, add, format } = dateFns;
 
 function exitWithError(message: string) {
   console.error(`Error: ${message}`);
@@ -21,10 +19,10 @@ if (inputIcalFile === undefined || newStartDate === undefined) {
 $ yarn start calendar.ics 2020-05-04`);
 }
 
-const outputIcalFile = inputIcalFile.replace('.ics', '-moved.ics');
+const outputCsvFile = inputIcalFile.replace('.ics', '.csv');
 
-if (existsSync(outputIcalFile)) {
-  exitWithError(`Output file at ${outputIcalFile} already exists!`);
+if (existsSync(outputCsvFile)) {
+  exitWithError(`Output file at ${outputCsvFile} already exists!`);
 }
 
 const events = Object.values(await icalParser.parseFile(inputIcalFile)).filter(
@@ -44,15 +42,33 @@ const dateDifference = differenceInDays(
   startOfDayOfFirstEvent,
 );
 
+const rows = [
+  [
+    'Subject',
+    'Start Date',
+    'Start Time',
+    'End Date',
+    'End Time',
+    'All Day Event',
+    'Description',
+    'Location',
+  ],
+];
+
 events.forEach((event) => {
-  calendar.createEvent({
-    start: add(event.start, { days: dateDifference }),
-    end: add(event.end, { days: dateDifference }),
-    summary: event.summary,
-    description: event.description,
-    location: event.location,
-    url: event.url,
-  });
+  const newEventStart = add(event.start, { days: dateDifference });
+  const newEventEnd = add(event.end, { days: dateDifference });
+  rows.push([
+    event.summary,
+    format(newEventStart, 'dd/MM/yyyy'),
+    format(newEventStart, 'p'),
+    format(newEventEnd, 'dd/MM/yyyy'),
+    format(newEventEnd, 'p'),
+    event.datetype === 'date' ? 'TRUE' : 'FALSE',
+    event.description,
+    event.location,
+  ]);
 });
 
-calendar.saveSync(outputIcalFile);
+const csvContent = await fastCsvFormat.writeToString(rows);
+writeFileSync(outputCsvFile, csvContent);

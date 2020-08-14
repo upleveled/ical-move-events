@@ -1,8 +1,8 @@
 {
-  "name": "ical-move-events",
+  "name": "ical-to-csv-move-events",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:upleveled/ical-move-events.git",
+  "repository": "git@github.com:upleveled/ical-to-csv-move-events.git",
   "author": "Karl Horky <karl.horky@gmail.com>",
   "license": "MIT",
   "type": "module",
@@ -16,8 +16,8 @@
     "start": "node --loader ts-node/esm/transpile-only.mjs index.ts"
   },
   "dependencies": {
+    "@fast-csv/format": "4.3.1",
     "date-fns": "2.15.0",
-    "ical-generator": "^1.13.0",
     "node-ical": "0.11.3",
     "patch-package": "6.2.2",
     "ts-node": "TypeStrong/ts-node",
