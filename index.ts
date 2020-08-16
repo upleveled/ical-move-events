@@ -16,7 +16,7 @@ const [, , inputIcalFile, newStartDate] = process.argv;
 
 if (inputIcalFile === undefined || newStartDate === undefined) {
   exitWithError(`Please specify an input file and start date. Eg:
-$ yarn start calendar.ics 2020-05-04`);
+$ yarn start calendar.ics 2020-05-21`);
 }
 
 const outputCsvFile = inputIcalFile.replace('.ics', '.csv');
