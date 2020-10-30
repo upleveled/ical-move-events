@@ -2,21 +2,22 @@
 # yarn lockfile v1
 
 
-"@fast-csv/format@4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@fast-csv/format/-/format-4.3.1.tgz#e550731487002e0d1bac13422dd8506cdfd60f50"
-  integrity sha512-Ap6KSt0iJlzrivZU4grQzDGGOQ+vN5kvUeOHLF1BE7nWri1auiodgS3SCffvLe1Zvu79tACe1tw3dyBADk1NsA==
+"@fast-csv/format@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@fast-csv/format/-/format-4.3.3.tgz#9161b4b968fa31baad83af7249bcfec298f6b35c"
+  integrity sha512-M1+28HMRQN5Mx16pN5pchepmeoxAI9BkecFhmFCHKzkeliN3WPcs6kK7pA2EshQm7cqscNIlkoZQF7k5u8reWg==
   dependencies:
+    "@types/node" "^14.0.1"
     lodash.escaperegexp "^4.1.2"
     lodash.isboolean "^3.0.3"
     lodash.isequal "^4.5.0"
     lodash.isfunction "^3.0.9"
     lodash.isnil "^4.0.0"
 
-"@types/node@14.14.3":
-  version "14.14.3"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.3.tgz#e1c09064121f894baaad2bd9f12ce4a41bffb274"
-  integrity sha512-33/L34xS7HVUx23e0wOT2V1qPF1IrHgQccdJVm9uXGTB9vFBrrzBtkQymT8VskeKOxjz55MSqMv0xuLq+u98WQ==
+"@types/node@14.14.6", "@types/node@^14.0.1":
+  version "14.14.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.6.tgz#146d3da57b3c636cc0d1769396ce1cfa8991147f"
+  integrity sha512-6QlRuqsQ/Ox/aJEQWBEJG7A9+u7oSYl3mem/K8IzxXG/kAGbV1YPD9Bg9Zw3vyxC/YP+zONKwy8hGkSt1jxFMw==
 
 "@types/strip-bom@^3.0.0":
   version "3.0.0"
@@ -1117,10 +1118,10 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-node-ical@0.12.2:
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/node-ical/-/node-ical-0.12.2.tgz#278ca11234d9bb6e9b82d5fec661ccc9bcf14b8d"
-  integrity sha512-Dm8PyMM3ykBoXd3vy5znasb5ieuL+s8W7Dy5evevQr5RrYR7kvzs3jn03+vGhyiPy1VeQhjznLctF4xQMkaLMw==
+node-ical@0.12.3:
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/node-ical/-/node-ical-0.12.3.tgz#31d62832d6714ce681579ceffd55fbcd5d91b931"
+  integrity sha512-MCr71z5mUcF7LuC3iIPKMKcaQ4Mr5cft0Uh00BBnkOrsm6vdS2xTUOKy1vhaYZ1V711LJmSAwQakxBXxLlHY3g==
   dependencies:
     moment-timezone "^0.5.31"
     request "^2.88.2"
@@ -1728,10 +1729,10 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-typescript@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
-  integrity sha512-tEu6DGxGgRJPb/mVPIZ48e69xCn2yRmCgYmDugAVwmJ6o+0u1RI18eO7E7WBTLYLaEVVOhwQmcdhQHweux/WPg==
+typescript@4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
+  integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
 
 union-value@^1.0.0:
   version "1.0.1"
