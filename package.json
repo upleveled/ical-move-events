@@ -16,7 +16,7 @@
     "start": "node --loader ts-node/esm/transpile-only.mjs index.ts"
   },
   "dependencies": {
-    "@fast-csv/format": "4.3.3",
+    "@fast-csv/format": "4.3.5",
     "date-fns": "2.16.1",
     "node-ical": "0.12.3",
     "patch-package": "6.2.2",
