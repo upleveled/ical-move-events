@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fast-csv/format@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@fast-csv/format/-/format-4.3.3.tgz#9161b4b968fa31baad83af7249bcfec298f6b35c"
-  integrity sha512-M1+28HMRQN5Mx16pN5pchepmeoxAI9BkecFhmFCHKzkeliN3WPcs6kK7pA2EshQm7cqscNIlkoZQF7k5u8reWg==
+"@fast-csv/format@4.3.5":
+  version "4.3.5"
+  resolved "https://registry.yarnpkg.com/@fast-csv/format/-/format-4.3.5.tgz#90d83d1b47b6aaf67be70d6118f84f3e12ee1ff3"
+  integrity sha512-8iRn6QF3I8Ak78lNAa+Gdl5MJJBM5vRHivFtMRUWINdevNo00K7OXxS2PshawLKTejVwieIlPmK5YlLu6w4u8A==
   dependencies:
     "@types/node" "^14.0.1"
     lodash.escaperegexp "^4.1.2"
