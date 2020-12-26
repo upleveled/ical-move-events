@@ -14,10 +14,10 @@
     lodash.isfunction "^3.0.9"
     lodash.isnil "^4.0.0"
 
-"@types/node@14.14.14":
-  version "14.14.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.14.tgz#f7fd5f3cc8521301119f63910f0fb965c7d761ae"
-  integrity sha512-UHnOPWVWV1z+VV8k6L1HhG7UbGBgIdghqF3l9Ny9ApPghbjICXkUJSd/b9gOgQfjM1r+37cipdw/HJ3F6ICEnQ==
+"@types/node@14.14.16":
+  version "14.14.16"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.16.tgz#3cc351f8d48101deadfed4c9e4f116048d437b4b"
+  integrity sha512-naXYePhweTi+BMv11TgioE2/FXU4fSl29HAH1ffxVciNsH3rYXjNP2yM8wqmSm7jS20gM8TIklKiTen+1iVncw==
 
 "@types/node@^14.0.1":
   version "14.14.6"
@@ -1128,10 +1128,10 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-node-ical@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/node-ical/-/node-ical-0.12.3.tgz#31d62832d6714ce681579ceffd55fbcd5d91b931"
-  integrity sha512-MCr71z5mUcF7LuC3iIPKMKcaQ4Mr5cft0Uh00BBnkOrsm6vdS2xTUOKy1vhaYZ1V711LJmSAwQakxBXxLlHY3g==
+node-ical@0.12.4:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/node-ical/-/node-ical-0.12.4.tgz#ba82ca09dd873fc8b11d7cfaa1716494cc94e90d"
+  integrity sha512-CvRC9OSVHXL+hNkB0Imd9bDQ2mpmG+THGeWzDBvE8OrGBBIul7EW8XChXXKUwk1dGceaSZMtVdOixaVxwK0Ytg==
   dependencies:
     moment-timezone "^0.5.31"
     request "^2.88.2"
