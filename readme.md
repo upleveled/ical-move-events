@@ -10,11 +10,11 @@ The following command will read the file `calendar.ics` in the `data` directory 
 yarn start data/calendar.ics 2020-05-21
 ```
 
-If you're using Yarn and you get the dreaded `Cannot find module '../dist/esm'` error, it's because [Yarn removes the files created by the `prepare` script](https://github.com/yarnpkg/yarn/issues/5235#issuecomment-571206092).
+If you need to add or subtract a number of hours from all events, you can add an optional `offset` parameter. For example, the following command will shift all events one hour earlier:
 
-You can fix this by running `yarn temp-install-ts-node-yarn`, which will run the `prepare` script in `ts-node` manually.
-
-This problem will go away when v9+ of `ts-node` is used instead of GitHub (see the section about the GitHub dependency below).
+```sh
+yarn start data/calendar.ics 2020-05-21 -1
+```
 
 ## Develop Mode
 

@@ -1,18 +1,24 @@
+import fastCsvFormat from '@fast-csv/format';
+import dateFns from 'date-fns';
 import { existsSync, writeFileSync } from 'fs';
 import icalParser from 'node-ical';
-import fastCsvFormat from '@fast-csv/format';
 
-// Because of the Node.js 14 ESM import problem
+// Not using named imports due to the Node.js 14 ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
-import dateFns from 'date-fns';
-const { startOfDay, min, differenceInDays, add, format } = dateFns;
+const { startOfDay, min, differenceInHours, format, addHours } = dateFns;
 
 function exitWithError(message: string) {
   console.error(`Error: ${message}`);
   process.exit(1);
 }
 
-const [, , inputIcalFile, newStartDate] = process.argv;
+const [
+  ,
+  ,
+  inputIcalFile,
+  newStartDate,
+  newStartDateOffset = '0',
+] = process.argv;
 
 if (inputIcalFile === undefined || newStartDate === undefined) {
   exitWithError(`Please specify an input file and start date. Eg:
@@ -33,11 +39,12 @@ const startOfDayOfFirstEvent = min(
   events.map((event) => startOfDay(event.start)),
 );
 
-const startOfDayNewStartDate = startOfDay(
-  new Date(`${newStartDate}T00:00:00.000Z`),
+const startOfDayNewStartDate = addHours(
+  startOfDay(new Date(`${newStartDate}T00:00:00.000Z`)),
+  Number(newStartDateOffset),
 );
 
-const dateDifference = differenceInDays(
+const dateDifference = differenceInHours(
   startOfDayNewStartDate,
   startOfDayOfFirstEvent,
 );
@@ -56,8 +63,8 @@ const rows = [
 ];
 
 events.forEach((event) => {
-  const newEventStart = add(event.start, { days: dateDifference });
-  const newEventEnd = add(event.end, { days: dateDifference });
+  const newEventStart = addHours(event.start, dateDifference);
+  const newEventEnd = addHours(event.end, dateDifference);
   rows.push([
     event.summary,
     format(newEventStart, 'dd/MM/yyyy'),
