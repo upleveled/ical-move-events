@@ -4,10 +4,10 @@ Move all events in an iCalendar file (`.ics` file) to start at a new starting da
 
 ## Usage
 
-The following command will read the file `calendar.ics` in the current directory and create a file called `calendar.csv` in the same directory with the moved events.
+The following command will read the file `calendar.ics` in the `data` directory and create a file called `calendar.csv` in the same directory with the moved events.
 
 ```sh
-yarn start calendar.ics 2020-05-21
+yarn start data/calendar.ics 2020-05-21
 ```
 
 If you're using Yarn and you get the dreaded `Cannot find module '../dist/esm'` error, it's because [Yarn removes the files created by the `prepare` script](https://github.com/yarnpkg/yarn/issues/5235#issuecomment-571206092).
@@ -19,7 +19,7 @@ This problem will go away when v9+ of `ts-node` is used instead of GitHub (see t
 ## Develop Mode
 
 ```sh
-yarn dev calendar.ics 2020-05-21
+yarn dev data/calendar.ics 2020-05-21
 ```
 
 ## Why convert to CSV?
