@@ -1,0 +1,70 @@
+diff --git a/node_modules/ical-generator/dist/event.js b/node_modules/ical-generator/dist/event.js
+index 0ce14cf..a1d69a8 100755
+--- a/node_modules/ical-generator/dist/event.js
++++ b/node_modules/ical-generator/dist/event.js
+@@ -55,7 +55,7 @@ var ICalEvent = /*#__PURE__*/function () {
+       lastModified: null,
+       x: []
+     };
+-    this._attributes = ['id', 'uid', 'sequence', 'start', 'end', 'timezone', 'stamp', 'timestamp', 'allDay', 'floating', 'repeating', 'summary', 'location', 'appleLocation', 'geo', 'description', 'htmlDescription', 'organizer', 'attendees', 'alarms', 'categories', 'status', 'busystatus', 'url', 'transparency', 'created', 'lastModified', 'recurrenceId', 'x'];
++    this._attributes = ['id', 'uid', 'sequence', 'start', 'end', 'timezone', 'stamp', 'timestamp', 'allDay', 'floating', 'rrule', 'repeating', 'summary', 'location', 'appleLocation', 'geo', 'description', 'htmlDescription', 'organizer', 'attendees', 'alarms', 'categories', 'status', 'busystatus', 'url', 'transparency', 'created', 'lastModified', 'recurrenceId', 'x'];
+     this._vars = {
+       allowedRepeatingFreq: ['SECONDLY', 'MINUTELY', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'],
+       allowedStatuses: ['CONFIRMED', 'TENTATIVE', 'CANCELLED'],
+@@ -361,6 +361,18 @@ var ICalEvent = /*#__PURE__*/function () {
+ 
+       return this;
+     }
++
++  }, {
++    key: "rrule",
++    value: function rrule(_rrule) {
++      if (_rrule === undefined) {
++        return this._data.rrule;
++      }
++
++      this._data.rrule = _rrule;
++
++      return this;
++    }
+     /**
+      * Set/Get the event's repeating stuff
+      *
+@@ -1145,7 +1157,14 @@ var ICalEvent = /*#__PURE__*/function () {
+         if (this._data.end) {
+           g += ICalTools.formatDateTZ(this.timezone(), 'DTEND', this._data.end, this._data) + '\r\n';
+         }
+-      } // REPEATING
++      }
++
++      // RRULE
++      if (this._data.rrule) {
++        g += this._data.rrule + '\r\n';
++      }
++
++      // REPEATING
+ 
+ 
+       if (this._data.repeating) {
+diff --git a/node_modules/ical-generator/index.d.ts b/node_modules/ical-generator/index.d.ts
+index 1a3e22a..5108af5 100644
+--- a/node_modules/ical-generator/index.d.ts
++++ b/node_modules/ical-generator/index.d.ts
+@@ -2,8 +2,8 @@
+ 
+ declare module 'ical-generator' {
+   /** Imports must be inside the module declaration */
+-  import * as moment from 'moment';
+   import * as http from 'http';
++  import * as moment from 'moment';
+ 
+   /**
+    * Tool for generating iCal calendar data
+@@ -72,6 +72,7 @@ declare module 'ical-generator' {
+       sequence?: number;
+       allDay?: boolean;
+       floating?: boolean;
++      rrule?: string;
+       repeating?: RepeatingData;
+       htmlDescription?: string;
+       organizer?: string | PersonData;

@@ -1,11 +1,19 @@
-import fastCsvFormat from '@fast-csv/format';
 import dateFns from 'date-fns';
-import { existsSync, writeFileSync } from 'fs';
+import { existsSync } from 'fs';
+import icalGenerator from 'ical-generator';
 import icalParser from 'node-ical';
+import rrule from 'rrule';
 
 // Not using named imports due to the Node.js 14 ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
-const { startOfDay, min, differenceInHours, format, addHours } = dateFns;
+const { RRule } = rrule;
+const {
+  startOfDay,
+  min,
+  differenceInHours,
+  // format,
+  addHours,
+} = dateFns;
 
 function exitWithError(message: string) {
   console.error(`Error: ${message}`);
@@ -25,10 +33,10 @@ if (inputIcalFile === undefined || newStartDate === undefined) {
 $ yarn start calendar.ics 2020-05-21`);
 }
 
-const outputCsvFile = inputIcalFile.replace('.ics', '.csv');
+const outputIcalFile = inputIcalFile.replace('.ics', '-moved.ics');
 
-if (existsSync(outputCsvFile)) {
-  exitWithError(`Output file at ${outputCsvFile} already exists!`);
+if (existsSync(outputIcalFile)) {
+  exitWithError(`Output file at ${outputIcalFile} already exists!`);
 }
 
 const events = Object.values(await icalParser.parseFile(inputIcalFile)).filter(
@@ -49,33 +57,30 @@ const dateDifference = differenceInHours(
   startOfDayOfFirstEvent,
 );
 
-const rows = [
-  [
-    'Subject',
-    'Start Date',
-    'Start Time',
-    'End Date',
-    'End Time',
-    'All Day Event',
-    'Description',
-    'Location',
-  ],
-];
+const calendar = icalGenerator();
 
 events.forEach((event) => {
-  const newEventStart = addHours(event.start, dateDifference);
-  const newEventEnd = addHours(event.end, dateDifference);
-  rows.push([
-    event.summary,
-    format(newEventStart, 'dd/MM/yyyy'),
-    format(newEventStart, 'p'),
-    format(newEventEnd, 'dd/MM/yyyy'),
-    format(newEventEnd, 'p'),
-    event.datetype === 'date' ? 'TRUE' : 'FALSE',
-    event.description,
-    event.location,
-  ]);
+  const newStartDate = addHours(event.start, dateDifference);
+  const newEndDate = addHours(event.end, dateDifference);
+
+  calendar.createEvent({
+    start: newStartDate,
+    ...(!event.rrule
+      ? {}
+      : {
+          // Feature created with patch-package until the following RRULE PR is merged:
+          // https://github.com/sebbo2002/ical-generator/pull/190
+          rrule: new RRule({
+            ...event.rrule?.options,
+            dtstart: newStartDate,
+          }).toString(),
+        }),
+    end: newEndDate,
+    summary: event.summary,
+    description: event.description,
+    location: event.location,
+    url: event.url,
+  });
 });
 
-const csvContent = await fastCsvFormat.writeToString(rows);
-writeFileSync(outputCsvFile, csvContent);
+calendar.saveSync(outputIcalFile);
