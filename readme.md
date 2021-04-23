@@ -21,7 +21,3 @@ yarn start data/calendar.ics 2020-05-21 -1
 ```sh
 yarn dev data/calendar.ics 2020-05-21
 ```
-
-## Why does this depend on the GitHub version of `ts-node`?
-
-The version of `ts-node` on GitHub has [ESM support with `--transpile-only`](https://github.com/TypeStrong/ts-node/pull/1102).
