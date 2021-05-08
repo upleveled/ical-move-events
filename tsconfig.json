@@ -1,20 +1,26 @@
 {
-  "include": ["index.ts"],
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "UpLeveled Node + React TSConfig",
+
   "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
-    "target": "esnext",
-    "lib": ["dom", "esnext"],
-    "importHelpers": true,
-    "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "target": "es2020",
+
     "moduleResolution": "node",
-    "jsx": "react",
-    "esModuleInterop": true
-  }
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
+  "exclude": ["node_modules", "build"]
 }

@@ -1,11 +1,12 @@
+import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
-import { existsSync } from 'fs';
 import icalGenerator from 'ical-generator';
 import icalParser from 'node-ical';
 import rrule from 'rrule';
 
 // Not using named imports due to the Node.js 14 ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const { RRule } = rrule;
 const {
   startOfDay,
@@ -15,28 +16,25 @@ const {
   addHours,
 } = dateFns;
 
-function exitWithError(message: string) {
-  console.error(`Error: ${message}`);
-  process.exit(1);
-}
-
 const [
   ,
   ,
   inputIcalFile,
   newStartDate,
   newStartDateOffset = '0',
-] = process.argv;
+] = process.argv as (string | undefined)[];
 
-if (inputIcalFile === undefined || newStartDate === undefined) {
-  exitWithError(`Please specify an input file and start date. Eg:
+if (!inputIcalFile || !newStartDate) {
+  console.error(`Error: Please specify an input file and start date. Eg:
 $ yarn start calendar.ics 2020-05-21`);
+  process.exit(1);
 }
 
 const outputIcalFile = inputIcalFile.replace('.ics', '-moved.ics');
 
 if (existsSync(outputIcalFile)) {
-  exitWithError(`Output file at ${outputIcalFile} already exists!`);
+  console.error(`Error: Output file at ${outputIcalFile} already exists!`);
+  process.exit(1);
 }
 
 const events = Object.values(await icalParser.parseFile(inputIcalFile)).filter(
@@ -60,11 +58,11 @@ const dateDifference = differenceInHours(
 const calendar = icalGenerator();
 
 events.forEach((event) => {
-  const newStartDate = addHours(event.start, dateDifference);
-  const newEndDate = addHours(event.end, dateDifference);
+  const eventNewStartDate = addHours(event.start, dateDifference);
+  const eventNewEndDate = addHours(event.end, dateDifference);
 
   calendar.createEvent({
-    start: newStartDate,
+    start: eventNewStartDate,
     ...(!event.rrule
       ? {}
       : {
@@ -72,10 +70,10 @@ events.forEach((event) => {
           // https://github.com/sebbo2002/ical-generator/pull/190
           rrule: new RRule({
             ...event.rrule?.options,
-            dtstart: newStartDate,
+            dtstart: eventNewStartDate,
           }).toString(),
         }),
-    end: newEndDate,
+    end: eventNewEndDate,
     summary: event.summary,
     description: event.description,
     location: event.location,
