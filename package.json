@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "date-fns": "2.21.3",
-    "ical-generator": "1.15.4",
+    "ical-generator": "2.1.0",
     "node-ical": "0.13.0",
     "patch-package": "6.4.7",
     "postinstall-postinstall": "2.1.0",
