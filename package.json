@@ -15,7 +15,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@next/eslint-plugin-next": "^10.2.0",
+    "@next/eslint-plugin-next": "10.2.1-canary.6",
     "date-fns": "2.21.3",
     "ical-generator": "1.15.4",
     "node-ical": "0.13.0",
