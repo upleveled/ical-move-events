@@ -1,3 +1,4 @@
+import { AnyARecord } from 'node:dns';
 import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
@@ -7,7 +8,7 @@ import rrule from 'rrule';
 // Not using named imports due to the Node.js 14 ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { RRule } = rrule;
+const { RRule }: any = rrule;
 
 const {
   startOfDay,
