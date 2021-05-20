@@ -8,6 +8,7 @@ import rrule from 'rrule';
 // https://github.com/date-fns/date-fns/issues/1781
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { RRule } = rrule;
+
 const {
   startOfDay,
   min,
@@ -64,7 +65,7 @@ events.forEach((event) => {
           // Feature created with patch-package until the following RRULE PR is merged:
           // https://github.com/sebbo2002/ical-generator/pull/190
           repeating: new RRule({
-            ...event.rrule?.options,
+            ...event.rrule.options,
             dtstart: eventNewStartDate,
           }).toString(),
         }),
