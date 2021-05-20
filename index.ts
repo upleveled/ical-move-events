@@ -1,4 +1,3 @@
-import { AnyARecord } from 'node:dns';
 import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
