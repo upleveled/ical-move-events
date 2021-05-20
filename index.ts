@@ -8,6 +8,7 @@ import rrule from 'rrule';
 // https://github.com/date-fns/date-fns/issues/1781
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { RRule } = rrule;
+
 const {
   startOfDay,
   min,
@@ -16,13 +17,8 @@ const {
   addHours,
 } = dateFns;
 
-const [
-  ,
-  ,
-  inputIcalFile,
-  newStartDate,
-  newStartDateOffset = '0',
-] = process.argv as (string | undefined)[];
+const [, , inputIcalFile, newStartDate, newStartDateOffset = '0'] =
+  process.argv as (string | undefined)[];
 
 if (!inputIcalFile || !newStartDate) {
   console.error(`Error: Please specify an input file and start date. Eg:
@@ -68,8 +64,8 @@ events.forEach((event) => {
       : {
           // Feature created with patch-package until the following RRULE PR is merged:
           // https://github.com/sebbo2002/ical-generator/pull/190
-          rrule: new RRule({
-            ...event.rrule?.options,
+          repeating: new RRule({
+            ...event.rrule.options,
             dtstart: eventNewStartDate,
           }).toString(),
         }),
