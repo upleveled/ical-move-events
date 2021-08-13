@@ -1,21 +1,7 @@
 diff --git a/node_modules/rrule/dist/esm/src/rrule.d.ts b/node_modules/rrule/dist/esm/src/rrule.d.ts
-index c9da82f..617cc0a 100644
+index c9da82f..b01cd36 100644
 --- a/node_modules/rrule/dist/esm/src/rrule.d.ts
 +++ b/node_modules/rrule/dist/esm/src/rrule.d.ts
-@@ -1,10 +1,10 @@
-+import { Cache, CacheKeys } from './cache';
- import IterResult, { IterArgs } from './iterresult';
- import { Language } from './nlp/i18n';
- import { DateFormatter, GetText } from './nlp/totext';
--import { ParsedOptions, Options, Frequency, QueryMethods, QueryMethodTypes, IterResultType } from './types';
--import { parseString } from './parsestring';
- import { optionsToString } from './optionstostring';
--import { Cache, CacheKeys } from './cache';
-+import { parseString } from './parsestring';
-+import { Frequency, IterResultType, Options, ParsedOptions, QueryMethods, QueryMethodTypes } from './types';
- import { Weekday } from './weekday';
- export declare const Days: {
-     MO: Weekday;
 @@ -23,7 +23,7 @@ export declare const defaultKeys: ("freq" | "dtstart" | "interval" | "wkst" | "c
   *        The only required option is `freq`, one of RRule.YEARLY, RRule.MONTHLY, ...
   * @constructor
