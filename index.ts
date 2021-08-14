@@ -78,3 +78,5 @@ events.forEach((event) => {
 });
 
 calendar.saveSync(outputIcalFile);
+
+console.log(`Calendar events updated and saved in ${outputIcalFile}`);

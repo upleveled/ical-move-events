@@ -1,9 +1,9 @@
-name: Lint and Check Types
+name: Lint, Check Types, Test
 on: push
 
 jobs:
   build:
-    name: Lint and Check Types
+    name: Lint, Check Types, Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,3 +14,4 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn eslint .
       - run: yarn tsc
+      - run: yarn test
