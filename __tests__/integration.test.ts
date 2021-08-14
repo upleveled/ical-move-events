@@ -16,6 +16,11 @@ const testsDir = relative(
 const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 
+// Set timezone on GitHub Actions
+if (process.platform === 'linux') {
+  execa.commandSync('sudo timedatectl set-timezone Europe/Vienna');
+}
+
 test('moves calendar entries and saves file', () => {
   const { stdout } = execa.commandSync(
     `yarn start ${inputIcsFilePath} 2021-08-23`,
