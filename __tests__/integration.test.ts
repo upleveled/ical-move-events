@@ -24,7 +24,7 @@ test('moves calendar entries and saves file', () => {
 
   const outputFileContents = readFileSync(outputIcsFilePath, 'utf-8')
     .replaceAll(/\nUID:[a-z0-9-]+/g, '')
-    .replaceAll(/(\nDTSTAMP:\d+T17)\d{4}Z/g, '$1');
+    .replaceAll(/(\nDTSTAMP:\d+T)\d+Z/g, '$1');
   expect(outputFileContents).toMatchSnapshot();
 });
 
