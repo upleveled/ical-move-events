@@ -5,12 +5,15 @@ import execa from 'execa';
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { readFileSync, rmSync } from 'fs';
 // eslint-disable-next-line unicorn/prefer-node-protocol
-import { dirname } from 'path';
+import { dirname, relative } from 'path';
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { fileURLToPath } from 'url';
 
-const testsDir = dirname(fileURLToPath(import.meta.url));
-const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
+const testsDir = relative(
+  process.cwd(),
+  dirname(fileURLToPath(import.meta.url)),
+);
+const inputIcsFilePath = `./${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 
 test('moves calendar entries and saves file', () => {
