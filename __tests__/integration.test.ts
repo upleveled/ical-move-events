@@ -13,13 +13,12 @@ const testsDir = relative(
   process.cwd(),
   dirname(fileURLToPath(import.meta.url)),
 );
-const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
+const inputIcsFilePath = `./${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 
 test('moves calendar entries and saves file', () => {
   const { stdout } = execa.commandSync(
     `yarn start ${inputIcsFilePath} 2021-08-23`,
-    { cwd: process.cwd() },
   );
   expect(stdout).toMatchSnapshot();
 
@@ -32,7 +31,7 @@ test('moves calendar entries and saves file', () => {
 test('throws error if output file location already exists', () => {
   const { stderr } = execa.commandSync(
     `yarn start ${inputIcsFilePath} 2021-08-23`,
-    { cwd: process.cwd(), reject: false },
+    { reject: false },
   );
   expect(stderr.replace(/node:\d+/, 'node:')).toMatchSnapshot();
   rmSync(outputIcsFilePath);
