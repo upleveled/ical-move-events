@@ -7,7 +7,7 @@ import rrule from 'rrule';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { RRule } = rrule;
 
-// Not using named imports due to the Node.js 14 ESM import problem
+// Not using named imports due to the Node.js ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
 const {
   startOfDay,
