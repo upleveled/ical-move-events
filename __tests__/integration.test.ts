@@ -13,7 +13,7 @@ const testsDir = relative(
   process.cwd(),
   dirname(fileURLToPath(import.meta.url)),
 );
-const inputIcsFilePath = `./${testsDir}/ical-move-events-input-calendar.ics`;
+const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 
 test('moves calendar entries and saves file', () => {
