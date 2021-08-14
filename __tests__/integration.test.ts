@@ -19,6 +19,7 @@ const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 test('moves calendar entries and saves file', () => {
   const { stdout } = execa.commandSync(
     `yarn start ${inputIcsFilePath} 2021-08-23`,
+    { cwd: process.cwd() },
   );
   expect(stdout).toMatchSnapshot();
 
@@ -31,7 +32,7 @@ test('moves calendar entries and saves file', () => {
 test('throws error if output file location already exists', () => {
   const { stderr } = execa.commandSync(
     `yarn start ${inputIcsFilePath} 2021-08-23`,
-    { reject: false },
+    { cwd: process.cwd(), reject: false },
   );
   expect(stderr.replace(/node:\d+/, 'node:')).toMatchSnapshot();
   rmSync(outputIcsFilePath);
