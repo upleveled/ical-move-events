@@ -21,11 +21,9 @@ const {
 const {
   _: [inputIcalFile],
   start: newStartDate,
-  offset: newStartDateOffset = '0',
 } = mri(process.argv.slice(2)) as {
   _: string[];
   start?: string;
-  offset?: string;
 };
 
 if (!inputIcalFile || !newStartDate) {
@@ -49,9 +47,8 @@ const startOfDayOfFirstEvent = min(
   events.map((event) => startOfDay(event.start)),
 );
 
-const startOfDayNewStartDate = addHours(
-  startOfDay(new Date(`${newStartDate}T00:00:00.000Z`)),
-  Number(newStartDateOffset),
+const startOfDayNewStartDate = startOfDay(
+  new Date(`${newStartDate}T00:00:00.000Z`),
 );
 
 const dateDifference = differenceInHours(

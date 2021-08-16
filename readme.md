@@ -16,10 +16,10 @@ The following command will read the file `calendar.ics` in a directory named `da
 icalmv data/calendar.ics --start 2020-05-21
 ```
 
-If you need to add or subtract a number of hours from all events, you can add an optional `offset` parameter. For example, the following command will shift all events one hour earlier:
+This will account for timezone changes as a result of Daylight Savings Time, with a default timezone of `Europe/Vienna`. To specify a different timezone, pass in a `--timezone` option:
 
 ```sh
-icalmv data/calendar.ics --start 2020-05-21 --offset -1
+icalmv data/calendar.ics --start 2020-05-21 --timezone America/Vancouver
 ```
 
 ## Develop Mode
