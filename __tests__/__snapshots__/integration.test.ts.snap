@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`moves calendar entries and saves file 1`] = `
-"$ node --loader ts-node/esm/transpile-only.mjs index.ts __tests__/ical-move-events-input-calendar.ics 2021-08-23
+"$ node --loader ts-node/esm/transpile-only.mjs index.ts __tests__/ical-move-events-input-calendar.ics --start 2021-08-23
 Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"
 `;
 

@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
+import mri from 'mri';
 import icalParser from 'node-ical';
 import rrule from 'rrule';
 
@@ -17,12 +18,19 @@ const {
   addHours,
 } = dateFns;
 
-const [, , inputIcalFile, newStartDate, newStartDateOffset = '0'] =
-  process.argv as (string | undefined)[];
+const {
+  _: [inputIcalFile],
+  start: newStartDate,
+  offset: newStartDateOffset = '0',
+} = mri(process.argv.slice(2)) as {
+  _: string[];
+  start?: string;
+  offset?: string;
+};
 
 if (!inputIcalFile || !newStartDate) {
   console.error(`Error: Please specify an input file and start date. Eg:
-$ yarn dev calendar.ics 2020-05-21`);
+$ yarn start calendar.ics --start 2020-05-21`);
   process.exit(1);
 }
 
