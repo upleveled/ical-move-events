@@ -23,7 +23,7 @@ if (process.platform === 'linux') {
 
 test('moves calendar entries and saves file', () => {
   const { stdout } = execa.commandSync(
-    `yarn start ${inputIcsFilePath} 2021-08-23`,
+    `yarn dev ${inputIcsFilePath} 2021-08-23`,
   );
   expect(stdout).toMatchSnapshot();
 
@@ -35,7 +35,7 @@ test('moves calendar entries and saves file', () => {
 
 test('throws error if output file location already exists', () => {
   const { stderr } = execa.commandSync(
-    `yarn start ${inputIcsFilePath} 2021-08-23`,
+    `yarn dev ${inputIcsFilePath} 2021-08-23`,
     { reject: false },
   );
   expect(stderr.replace(/node:\d+/, 'node:')).toMatchSnapshot();

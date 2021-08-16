@@ -1,44 +1,53 @@
 {
-  "name": "ical-move-events",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:upleveled/ical-move-events.git",
-  "author": "Karl Horky <karl.horky@gmail.com>",
+  "name": "@upleveled/ical-move-events",
+  "version": "1.0.0-pre.2",
+  "repository": "upleveled/ical-move-events",
+  "author": "UpLeveled (https://github.com/upleveled)",
+  "contributors": [
+    "José Fernando Höwer Barbosa <josehowerupn@gmail.com>",
+    "Karl Horky <karl.horky@gmail.com>"
+  ],
+  "main": "index.ts",
   "license": "MIT",
   "type": "module",
+  "bin": {
+    "icalmv": "bin.js"
+  },
+  "files": [
+    "dist/index.js",
+    "bin.js"
+  ],
   "engines": {
     "node": ">=14.8.0"
   },
   "scripts": {
-    "dev": "ts-node-dev -r esm --respawn --script-mode --transpile-only index.ts",
+    "dev": "node --loader ts-node/esm/transpile-only.mjs index.ts",
     "test": "NODE_OPTIONS=--experimental-vm-modules yarn jest",
-    "start": "node --loader ts-node/esm/transpile-only.mjs index.ts",
-    "postinstall": "patch-package"
+    "build": "tsc --project tsconfig.production.json",
+    "prepare": "patch-package && yarn build"
   },
   "dependencies": {
-    "@next/eslint-plugin-next": "11.1.0",
     "date-fns": "2.23.0",
-    "execa": "^5.1.1",
+    "execa": "5.1.1",
     "ical-generator": "3.0.0",
-    "jest": "^27.0.6",
+    "jest": "27.0.6",
+    "mri": "1.1.6",
     "node-ical": "0.13.0",
-    "patch-package": "6.4.7",
-    "postinstall-postinstall": "2.1.0",
-    "rrule": "2.6.8",
-    "ts-node": "10.2.0",
-    "typescript": "4.3.5"
+    "rrule": "2.6.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@babel/preset-typescript": "^7.15.0",
-    "@types/jest": "^27.0.1",
+    "@babel/core": "7.15.0",
+    "@babel/preset-env": "7.15.0",
+    "@babel/preset-typescript": "7.15.0",
+    "@next/eslint-plugin-next": "11.1.0",
+    "@types/jest": "27.0.1",
+    "@types/mri": "1.1.1",
     "@types/node": "16.6.1",
     "@typescript-eslint/eslint-plugin": "4.29.1",
     "@typescript-eslint/parser": "4.29.1",
     "@upleveled/eslint-config-upleveled": "1.15.0",
     "babel-eslint": "10.1.0",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "27.0.6",
     "eslint": "7.32.0",
     "eslint-config-react-app": "6.0.0",
     "eslint-import-resolver-typescript": "2.4.0",
@@ -51,7 +60,8 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "eslint-plugin-testing-library": "4.10.1",
     "eslint-plugin-unicorn": "35.0.0",
-    "esm": "3.2.25",
-    "ts-node-dev": "1.1.8"
+    "patch-package": "6.4.7",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
   }
 }

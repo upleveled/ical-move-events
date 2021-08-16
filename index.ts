@@ -22,7 +22,7 @@ const [, , inputIcalFile, newStartDate, newStartDateOffset = '0'] =
 
 if (!inputIcalFile || !newStartDate) {
   console.error(`Error: Please specify an input file and start date. Eg:
-$ yarn start calendar.ics 2020-05-21`);
+$ yarn dev calendar.ics 2020-05-21`);
   process.exit(1);
 }
 
