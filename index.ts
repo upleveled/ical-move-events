@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
+import dateFnsTz from 'date-fns-tz';
 import icalGenerator from 'ical-generator';
 import mri from 'mri';
 import icalParser from 'node-ical';
@@ -10,25 +11,26 @@ const { RRule } = rrule;
 
 // Not using named imports due to the Node.js ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
-const {
-  startOfDay,
-  min,
-  differenceInHours,
-  // format,
-  addHours,
-} = dateFns;
+const { startOfDay, differenceInDays, isWeekend, addDays, addMilliseconds } =
+  dateFns;
+
+const { getTimezoneOffset } = dateFnsTz;
 
 const {
   _: [inputIcalFile],
   start: newStartDate,
+  end: newEndDate,
+  timezone: timeZone = 'Europe/Vienna',
 } = mri(process.argv.slice(2)) as {
   _: string[];
   start?: string;
+  end?: string;
+  timezone?: string;
 };
 
-if (!inputIcalFile || !newStartDate) {
-  console.error(`Error: Please specify an input file and start date. Eg:
-$ yarn start calendar.ics --start 2020-05-21`);
+if (!inputIcalFile || !newStartDate || !newEndDate) {
+  console.error(`Error: Please specify an input file, start date and end date. Eg:
+$ yarn start calendar.ics --start 2020-05-21 --end 2020-08-15`);
   process.exit(1);
 }
 
@@ -39,47 +41,89 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
-const events = Object.values(await icalParser.parseFile(inputIcalFile)).filter(
-  (event) => event.type === 'VEVENT',
-) as Array<icalParser.VEvent>;
+const eventsByStartDates = (
+  Object.values(await icalParser.parseFile(inputIcalFile)).filter(
+    (event) => event.type === 'VEVENT',
+  ) as icalParser.VEvent[]
+)
+  .sort((a, b) => {
+    return a.start.getTime() - b.start.getTime();
+  })
+  .reduce((eventsByDay, event) => {
+    const eventStartOfDay = startOfDay(event.start);
+    eventsByDay[eventStartOfDay.toISOString()] ??= [];
+    eventsByDay[eventStartOfDay.toISOString()].push(event);
+    return eventsByDay;
+  }, {} as Record<string, icalParser.VEvent[]>);
 
-const startOfDayOfFirstEvent = min(
-  events.map((event) => startOfDay(event.start)),
-);
+function startOfDayFromString(dateString: string) {
+  return startOfDay(new Date(`${dateString}T00:00:00.000Z`));
+}
 
-const startOfDayNewStartDate = startOfDay(
-  new Date(`${newStartDate}T00:00:00.000Z`),
-);
+const availableDates = [
+  ...Array(
+    differenceInDays(
+      startOfDayFromString(newEndDate),
+      startOfDayFromString(newStartDate),
+    ) + 1,
+  ).keys(),
+].map((daysToAdd) => {
+  const date = addDays(startOfDayFromString(newStartDate), daysToAdd);
+  const isFullyScheduled = isWeekend(date);
+  return {
+    date: date,
+    isFullyScheduled: isFullyScheduled,
+  };
+});
 
-const dateDifference = differenceInHours(
-  startOfDayNewStartDate,
-  startOfDayOfFirstEvent,
-);
+function calculateNewDate(originalDate: Date, daysDifference: number) {
+  const eventNewStartDate = addDays(originalDate, daysDifference);
+  return addMilliseconds(
+    eventNewStartDate,
+    // For timezone changes from Daylight Savings Time
+    getTimezoneOffset(timeZone, eventNewStartDate) -
+      getTimezoneOffset(timeZone, originalDate),
+  );
+}
 
 const calendar = icalGenerator();
 
-events.forEach((event) => {
-  const eventNewStartDate = addHours(event.start, dateDifference);
-  const eventNewEndDate = addHours(event.end, dateDifference);
+Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
+  const nextAvailableDate = availableDates.find(
+    ({ isFullyScheduled }) => !isFullyScheduled,
+  );
 
-  calendar.createEvent({
-    start: eventNewStartDate,
-    ...(!event.rrule
-      ? {}
-      : {
-          // Feature created with patch-package until the following RRULE PR is merged:
-          // https://github.com/sebbo2002/ical-generator/pull/190
-          repeating: new RRule({
-            ...event.rrule.options,
-            dtstart: eventNewStartDate,
-          }).toString(),
-        }),
-    end: eventNewEndDate,
-    summary: event.summary,
-    description: event.description,
-    location: event.location,
-    url: event.url,
+  if (!nextAvailableDate) {
+    throw new Error('No next available date!');
+  }
+
+  events.forEach((event) => {
+    const daysDifference = differenceInDays(
+      nextAvailableDate.date,
+      new Date(startDate),
+    );
+
+    const eventNewStart = calculateNewDate(event.start, daysDifference);
+    const eventNewEnd = calculateNewDate(event.end, daysDifference);
+    calendar.createEvent({
+      start: eventNewStart,
+      ...(!event.rrule
+        ? {}
+        : {
+            repeating: new RRule({
+              ...event.rrule.options,
+              dtstart: eventNewStart,
+            }).toString(),
+          }),
+      end: eventNewEnd,
+      summary: event.summary,
+      description: event.description,
+      location: event.location,
+      url: event.url,
+    });
   });
+
+  nextAvailableDate.isFullyScheduled = true;
 });
 
 calendar.saveSync(outputIcalFile);
