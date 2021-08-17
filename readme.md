@@ -16,7 +16,7 @@ The following command will read the file `calendar.ics` in a directory named `da
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15
 ```
 
-This will account for timezone changes as a result of Daylight Savings Time, with a default timezone of `Europe/Vienna`. To specify a different timezone, pass in a `--timezone` option:
+`icalmv` will account for timezone changes as a result of Daylight Savings Time, with a default timezone of `Europe/Vienna`. To specify a different timezone, pass in a `--timezone` option:
 
 ```sh
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --timezone America/Vancouver
