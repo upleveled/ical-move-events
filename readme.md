@@ -1,4 +1,4 @@
-# ical-move-events
+# @upleveled/ical-move-events
 
 Move all events in an iCalendar file (`.ics` file) to a new starting date.
 
@@ -16,13 +16,21 @@ The following command will read the file `calendar.ics` in a directory named `da
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15
 ```
 
-`icalmv` will account for timezone changes as a result of Daylight Savings Time, with a default timezone of `Europe/Vienna`. To specify a different timezone, pass in a `--timezone` option:
+`icalmv` moves events to avoid public holidays, defaulting to [Google Calendar's Austrian Public Holidays](https://calendar.google.com/calendar/ical/en.austrian.official%23holiday%40group.v.calendar.google.com/public/basic.ics). To specify another calendar, pass in a URL to an iCalendar file using the `--holidays-ical` option:
 
 ```sh
-icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --timezone America/Vancouver
+icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holidays-ical https://calendar.google.com/calendar/ical/en.canadian.official%23holiday%40group.v.calendar.google.com/public/basic.ics
 ```
 
-## Develop Mode
+`icalmv` manages holiday calendar entries too, removing any events with the title of `🎉 Holiday` and creating full-day events (9:00 to 18:00) with this same title. Configure the title with `--holiday-title`:
+
+```sh
+icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holiday-title 'Public holiday'
+```
+
+## Development
+
+During development, run `icalmv` using `yarn dev`, with all other arguments staying the same:
 
 ```sh
 yarn dev data/calendar.ics --start 2020-05-21 --end 2020-08-15
