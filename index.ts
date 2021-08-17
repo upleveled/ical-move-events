@@ -1,6 +1,5 @@
 import { existsSync } from 'node:fs';
 import dateFns from 'date-fns';
-import dateFnsTz from 'date-fns-tz';
 import icalGenerator from 'ical-generator';
 import mri from 'mri';
 import icalParser from 'node-ical';
@@ -14,18 +13,15 @@ const { RRule } = rrule;
 const { startOfDay, differenceInDays, isWeekend, addDays, addMilliseconds } =
   dateFns;
 
-const { getTimezoneOffset } = dateFnsTz;
 
 const {
   _: [inputIcalFile],
   start: newStartDate,
   end: newEndDate,
-  timezone: timeZone = 'Europe/Vienna',
 } = mri(process.argv.slice(2)) as {
   _: string[];
   start?: string;
   end?: string;
-  timezone?: string;
 };
 
 if (!inputIcalFile || !newStartDate || !newEndDate) {
@@ -76,16 +72,6 @@ const availableDates = [
   };
 });
 
-function calculateNewDate(originalDate: Date, daysDifference: number) {
-  const eventNewStartDate = addDays(originalDate, daysDifference);
-  return addMilliseconds(
-    eventNewStartDate,
-    // For timezone changes from Daylight Savings Time
-    getTimezoneOffset(timeZone, eventNewStartDate) -
-      getTimezoneOffset(timeZone, originalDate),
-  );
-}
-
 const calendar = icalGenerator();
 
 Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
@@ -103,8 +89,9 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
       new Date(startDate),
     );
 
-    const eventNewStart = calculateNewDate(event.start, daysDifference);
-    const eventNewEnd = calculateNewDate(event.end, daysDifference);
+    const eventNewStart = addDays(event.start, daysDifference);
+    const eventNewEnd = addDays(event.end, daysDifference);
+
     calendar.createEvent({
       start: eventNewStart,
       ...(!event.rrule

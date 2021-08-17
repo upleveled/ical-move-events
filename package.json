@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "date-fns": "2.23.0",
-    "date-fns-tz": "^1.1.6",
     "execa": "5.1.1",
     "ical-generator": "3.0.0",
     "jest": "27.0.6",
