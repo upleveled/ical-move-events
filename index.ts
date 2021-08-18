@@ -83,7 +83,7 @@ const eventsByStartDates = (
   }, {} as Record<string, icalParser.VEvent[]>);
 
 function startOfDayFromString(dateString: string) {
-  return startOfDay(new Date(`${dateString}T00:00:00.000Z`));
+  return startOfDay(new Date(dateString));
 }
 
 const availableDates = [
