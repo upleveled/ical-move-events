@@ -10,28 +10,51 @@ const { RRule } = rrule;
 
 // Not using named imports due to the Node.js ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
-const {
-  startOfDay,
-  min,
-  differenceInHours,
-  // format,
-  addHours,
-} = dateFns;
+const { addDays, differenceInDays, format, isWeekend, startOfDay } = dateFns;
 
 const {
   _: [inputIcalFile],
-  start: newStartDate,
-  offset: newStartDateOffset = '0',
+  start,
+  end,
+  'holidays-ical':
+    holidaysIcalUrl = 'https://calendar.google.com/calendar/ical/en.austrian.official%23holiday%40group.v.calendar.google.com/public/basic.ics?max-results=100',
+  'holiday-title': holidayTitle = '🎉 Holiday',
 } = mri(process.argv.slice(2)) as {
   _: string[];
   start?: string;
-  offset?: string;
+  end?: string;
+  'holidays-ical'?: string;
+  'holiday-title'?: string;
 };
 
-if (!inputIcalFile || !newStartDate) {
-  console.error(`Error: Please specify an input file and start date. Eg:
-$ yarn start calendar.ics --start 2020-05-21`);
+if (!inputIcalFile || !start || !end) {
+  console.error(`Error: Please specify an input file, start date and end date. Eg:
+$ icalmv calendar.ics --start 2020-05-21 --end 2020-08-15`);
   process.exit(1);
+}
+
+const startOfDayStart = startOfDay(new Date(start));
+const startOfDayEnd = startOfDay(new Date(end));
+
+const holidayEvents =
+  holidaysIcalUrl === 'false'
+    ? []
+    : (
+        Object.values(await icalParser.fromURL(holidaysIcalUrl)).filter(
+          (event) =>
+            event.type === 'VEVENT' &&
+            // Only holiday events during the specified range
+            startOfDayStart.getTime() <= event.start.getTime() &&
+            startOfDayEnd.getTime() >= event.start.getTime(),
+        ) as icalParser.VEvent[]
+      ).sort((a, b) => {
+        return a.start.getTime() - b.start.getTime();
+      });
+
+function isHoliday(date: Date) {
+  return holidayEvents.some(
+    (holiday) => holiday.start.getTime() === date.getTime(),
+  );
 }
 
 const outputIcalFile = inputIcalFile.replace('.ics', '-moved.ics');
@@ -41,47 +64,174 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
-const events = Object.values(await icalParser.parseFile(inputIcalFile)).filter(
-  (event) => event.type === 'VEVENT',
-) as Array<icalParser.VEvent>;
+/**
+ * An object with:
+ * - keys: derived from the start of the day upon which the events take place
+ * - values: an array of all events on that day
+ *
+ * Eg:
+ *
+ * ```js
+ * {
+ *   '2021-08-04T22:00:00.000Z': [
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-04T22:00:00.000Z',
+ *       end: '2021-08-13T22:00:00.000Z',
+ *       summary: '🏗 Project 2 (6 days)',
+ *       // ...
+ *     },
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-05T07:30:00.000Z',
+ *       end: '2021-08-05T10:30:00.000Z',
+ *       summary: '🧑‍🏫 Lecture 4',
+ *       // ...
+ *     },
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-05T10:30:00.000Z',
+ *       end: '2021-08-05T16:00:00.000Z',
+ *       summary: 'Project Time 4',
+ *       // ...
+ *     },
+ *   ],
+ *   // ...
+ * }
+ * ```
+ */
+const eventsByStartDates = (
+  Object.values(await icalParser.parseFile(inputIcalFile)).filter(
+    (event) => event.type === 'VEVENT',
+  ) as icalParser.VEvent[]
+)
+  .filter((event) => {
+    return event.summary !== holidayTitle;
+  })
+  .sort((a, b) => {
+    return a.start.getTime() - b.start.getTime();
+  })
+  .reduce((eventsByDay, event) => {
+    const eventStartOfDay = startOfDay(event.start);
+    eventsByDay[eventStartOfDay.toISOString()] ??= [];
+    eventsByDay[eventStartOfDay.toISOString()].push(event);
+    return eventsByDay;
+  }, {} as Record<string, icalParser.VEvent[]>);
 
-const startOfDayOfFirstEvent = min(
-  events.map((event) => startOfDay(event.start)),
-);
+function startOfDayFromString(/** Eg. 2020-12-30 */ dateString: string) {
+  return startOfDay(new Date(dateString));
+}
 
-const startOfDayNewStartDate = addHours(
-  startOfDay(new Date(`${newStartDate}T00:00:00.000Z`)),
-  Number(newStartDateOffset),
-);
-
-const dateDifference = differenceInHours(
-  startOfDayNewStartDate,
-  startOfDayOfFirstEvent,
-);
+// Generate array of all dates between the start and end, including metadata
+// about whether the date falls on a weekend or holiday, in which case the
+// date is also marked as being fully scheduled
+const availableDates = [
+  ...Array(
+    differenceInDays(startOfDayFromString(end), startOfDayFromString(start)) +
+      1,
+  ).keys(),
+].map((daysToAdd) => {
+  const date = addDays(startOfDayFromString(start), daysToAdd);
+  const dateIsWeekend = isWeekend(date);
+  const dateIsHoliday = isHoliday(date);
+  const isFullyScheduled = dateIsWeekend || dateIsHoliday;
+  return {
+    date: date,
+    isFullyScheduled: isFullyScheduled,
+    isWeekend: dateIsWeekend,
+    isHoliday: dateIsHoliday,
+  };
+});
 
 const calendar = icalGenerator();
 
-events.forEach((event) => {
-  const eventNewStartDate = addHours(event.start, dateDifference);
-  const eventNewEndDate = addHours(event.end, dateDifference);
+Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
+  const nextAvailableDate = availableDates.find(
+    ({ isFullyScheduled }) => !isFullyScheduled,
+  );
 
+  if (!nextAvailableDate) {
+    throw new Error('No next available date!');
+  }
+
+  events.forEach((event) => {
+    const daysDifferenceStart = differenceInDays(
+      nextAvailableDate.date,
+      new Date(startDate),
+    );
+
+    // The amount of days in parentheses in the event title, which
+    // indicates the amount of non-weekend, non-holiday days
+    // that this multi-day event requires
+    const businessDaysDuration =
+      Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) || 1;
+
+    const eventNewStart = addDays(event.start, daysDifferenceStart);
+
+    let eventNewEnd: Date;
+    if (businessDaysDuration === 1) {
+      eventNewEnd = addDays(event.end, daysDifferenceStart);
+    } else {
+      // Calculate the earliest possible new start date based on
+      // the new event start date
+      //
+      // This means that this only supports full-day multi-day events
+      // (because the time from the end date will be discarded)
+      eventNewEnd = addDays(eventNewStart, businessDaysDuration);
+
+      // Find the number of weekend and holiday days during the range,
+      // so the end date can be adjusted if necessary
+      const fullyScheduledDaysDuringRange = availableDates.filter(
+        ({ isFullyScheduled, date }) => {
+          return (
+            eventNewStart.getTime() <= date.getTime() &&
+            eventNewEnd.getTime() >= date.getTime() &&
+            isFullyScheduled
+          );
+        },
+      ).length;
+
+      // If there are a non-zero amount of weekend or holiday days in the
+      // range, add the amount to the duration of the event
+      if (fullyScheduledDaysDuringRange !== 0) {
+        eventNewEnd = addDays(eventNewEnd, fullyScheduledDaysDuringRange);
+      }
+    }
+
+    calendar.createEvent({
+      start: eventNewStart,
+      ...(!event.rrule
+        ? {}
+        : {
+            // Intentionally do not respect the EXDATE entries, because
+            // they often correspond to holidays, which will be different
+            // based on the new date range
+            //
+            // If EXDATEs should be generated for the new holidays in the
+            // range, these dates could be possibly generated from
+            // the data in the `holidayEvents` array
+            repeating: new RRule({
+              ...event.rrule.options,
+              dtstart: eventNewStart,
+            }).toString(),
+          }),
+      end: eventNewEnd,
+      summary: event.summary,
+      description: event.description,
+      location: event.location,
+      url: event.url,
+    });
+  });
+
+  nextAvailableDate.isFullyScheduled = true;
+});
+
+// Add full-day events for holidays
+holidayEvents.forEach((holiday) => {
   calendar.createEvent({
-    start: eventNewStartDate,
-    ...(!event.rrule
-      ? {}
-      : {
-          // Feature created with patch-package until the following RRULE PR is merged:
-          // https://github.com/sebbo2002/ical-generator/pull/190
-          repeating: new RRule({
-            ...event.rrule.options,
-            dtstart: eventNewStartDate,
-          }).toString(),
-        }),
-    end: eventNewEndDate,
-    summary: event.summary,
-    description: event.description,
-    location: event.location,
-    url: event.url,
+    start: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 09:00`),
+    end: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 18:00`),
+    summary: holidayTitle,
   });
 });
 

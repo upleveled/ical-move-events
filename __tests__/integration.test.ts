@@ -16,6 +16,12 @@ const testsDir = relative(
 const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
 
+function getNormalizedOutputFileContents() {
+  return readFileSync(outputIcsFilePath, 'utf-8')
+    .replaceAll(/\nUID:[a-z0-9-]+/g, '')
+    .replaceAll(/(\nDTSTAMP:).+/g, '$1');
+}
+
 // Set timezone on GitHub Actions
 if (process.platform === 'linux') {
   execa.commandSync('sudo timedatectl set-timezone Europe/Vienna');
@@ -23,21 +29,30 @@ if (process.platform === 'linux') {
 
 test('moves calendar entries and saves file', () => {
   const { stdout } = execa.commandSync(
-    `yarn dev ${inputIcsFilePath} --start 2021-08-23`,
+    `yarn dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
   );
   expect(stdout).toMatchSnapshot();
 
-  const outputFileContents = readFileSync(outputIcsFilePath, 'utf-8')
-    .replaceAll(/\nUID:[a-z0-9-]+/g, '')
-    .replaceAll(/(\nDTSTAMP:).+/g, '$1');
+  const outputFileContents = getNormalizedOutputFileContents();
   expect(outputFileContents).toMatchSnapshot();
 });
 
 test('throws error if output file location already exists', () => {
   const { stderr } = execa.commandSync(
-    `yarn dev ${inputIcsFilePath} --start 2021-08-23`,
+    `yarn dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
     { reject: false },
   );
   expect(stderr.replace(/node:\d+/, 'node:')).toMatchSnapshot();
+  rmSync(outputIcsFilePath);
+});
+
+test('moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time', () => {
+  const { stdout } = execa.commandSync(
+    `yarn dev ${inputIcsFilePath} --start 2021-11-01 --end 2021-11-12`,
+  );
+  expect(stdout).toMatchSnapshot();
+
+  const outputFileContents = getNormalizedOutputFileContents();
+  expect(outputFileContents).toMatchSnapshot();
   rmSync(outputIcsFilePath);
 });
