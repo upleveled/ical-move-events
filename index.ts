@@ -17,7 +17,7 @@ const {
   start,
   end,
   'holidays-ical':
-    holidaysIcalUrl = 'https://calendar.google.com/calendar/ical/en.austrian.official%23holiday%40group.v.calendar.google.com/public/basic.ics?max-results=100',
+    holidaysIcalUrl = 'https://www.officeholidays.com/ics-clean/austria',
   'holiday-title': holidayTitle = '🎉 Holiday',
 } = mri(process.argv.slice(2)) as {
   _: string[];
@@ -43,6 +43,7 @@ const holidayEvents =
         Object.values(await icalParser.fromURL(holidaysIcalUrl)).filter(
           (event) =>
             event.type === 'VEVENT' &&
+            !(event.summary as any)?.val.includes('Regional') &&
             // Only holiday events during the specified range
             startOfDayStart.getTime() <= event.start.getTime() &&
             startOfDayEnd.getTime() >= event.start.getTime(),
