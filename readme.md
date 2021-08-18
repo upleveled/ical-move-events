@@ -16,7 +16,7 @@ The following command will read the file `calendar.ics` in a directory named `da
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15
 ```
 
-`icalmv` moves events to avoid public holidays, defaulting to [Google Calendar's Austrian Public Holidays](https://calendar.google.com/calendar/ical/en.austrian.official%23holiday%40group.v.calendar.google.com/public/basic.ics). To specify another calendar, pass in a URL to an iCalendar file using the `--holidays-ical` option:
+`icalmv` moves events to avoid public holidays, defaulting to [Google Calendar's Austrian Public Holidays](https://calendar.google.com/calendar/ical/en.austrian.official%23holiday%40group.v.calendar.google.com/public/basic.ics), which returns events until the end of the next year. To specify another calendar, pass in a URL to an iCalendar file using the `--holidays-ical` option (or specify `false` if you don't want any holidays):
 
 ```sh
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holidays-ical https://calendar.google.com/calendar/ical/en.canadian.official%23holiday%40group.v.calendar.google.com/public/basic.ics

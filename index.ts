@@ -36,18 +36,20 @@ $ icalmv calendar.ics --start 2020-05-21 --end 2020-08-15`);
 const startOfDayStart = startOfDay(new Date(start));
 const startOfDayEnd = startOfDay(new Date(end));
 
-const holidayEvents = !holidaysIcalUrl
-  ? []
-  : (
-      Object.values(await icalParser.fromURL(holidaysIcalUrl)).filter(
-        (event) =>
-          event.type === 'VEVENT' &&
-          startOfDayStart.getTime() <= event.start.getTime() &&
-          startOfDayEnd.getTime() >= event.start.getTime(),
-      ) as icalParser.VEvent[]
-    ).sort((a, b) => {
-      return a.start.getTime() - b.start.getTime();
-    });
+const holidayEvents =
+  holidaysIcalUrl === 'false'
+    ? []
+    : (
+        Object.values(await icalParser.fromURL(holidaysIcalUrl)).filter(
+          (event) =>
+            event.type === 'VEVENT' &&
+            // Only holiday events during the specified range
+            startOfDayStart.getTime() <= event.start.getTime() &&
+            startOfDayEnd.getTime() >= event.start.getTime(),
+        ) as icalParser.VEvent[]
+      ).sort((a, b) => {
+        return a.start.getTime() - b.start.getTime();
+      });
 
 function isHoliday(date: Date) {
   return holidayEvents.some(
