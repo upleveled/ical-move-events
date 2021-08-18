@@ -64,6 +64,42 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
+/**
+ * An object with:
+ * - keys: derived from the start of the day upon which the events take place
+ * - values: an array of all events on that day
+ *
+ * Eg:
+ *
+ * ```js
+ * {
+ *   '2021-08-04T22:00:00.000Z': [
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-04T22:00:00.000Z',
+ *       end: '2021-08-13T22:00:00.000Z',
+ *       summary: '🏗 Project 2 (6 days)',
+ *       // ...
+ *     },
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-05T07:30:00.000Z',
+ *       end: '2021-08-05T10:30:00.000Z',
+ *       summary: '🧑‍🏫 Lecture 4',
+ *       // ...
+ *     },
+ *     {
+ *       type: 'VEVENT',
+ *       start: '2021-08-05T10:30:00.000Z',
+ *       end: '2021-08-05T16:00:00.000Z',
+ *       summary: 'Project Time 4',
+ *       // ...
+ *     },
+ *   ],
+ *   // ...
+ * }
+ * ```
+ */
 const eventsByStartDates = (
   Object.values(await icalParser.parseFile(inputIcalFile)).filter(
     (event) => event.type === 'VEVENT',
@@ -82,10 +118,13 @@ const eventsByStartDates = (
     return eventsByDay;
   }, {} as Record<string, icalParser.VEvent[]>);
 
-function startOfDayFromString(dateString: string) {
+function startOfDayFromString(/** Eg. 2020-12-30 */ dateString: string) {
   return startOfDay(new Date(dateString));
 }
 
+// Generate array of all dates between the start and end, including metadata
+// about whether the date falls on a weekend or holiday, in which case the
+// date is also marked as being fully scheduled
 const availableDates = [
   ...Array(
     differenceInDays(startOfDayFromString(end), startOfDayFromString(start)) +
@@ -121,6 +160,9 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
       new Date(startDate),
     );
 
+    // The amount of days in parentheses in the event title, which
+    // indicates the amount of non-weekend, non-holiday days
+    // that this multi-day event requires
     const businessDaysDuration =
       Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) || 1;
 
@@ -130,17 +172,15 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
     if (businessDaysDuration === 1) {
       eventNewEnd = addDays(event.end, daysDifferenceStart);
     } else {
-      // Calculate the earliest possible new start
-      // date based on the new event start date
+      // Calculate the earliest possible new start date based on
+      // the new event start date
       //
-      // This means that this only supports full-day
-      // multi-day events (because the time from the
-      // end date will be discarded)
+      // This means that this only supports full-day multi-day events
+      // (because the time from the end date will be discarded)
       eventNewEnd = addDays(eventNewStart, businessDaysDuration);
 
-      // Find the number of weekend and holiday days
-      // during the range, so the end date can be
-      // adjusted if necessary
+      // Find the number of weekend and holiday days during the range,
+      // so the end date can be adjusted if necessary
       const fullyScheduledDaysDuringRange = availableDates.filter(
         ({ isFullyScheduled, date }) => {
           return (
@@ -151,9 +191,8 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
         },
       ).length;
 
-      // If there are a non-zero amount of weekend
-      // or holiday days in the range, add the
-      // amount to the duration of the event
+      // If there are a non-zero amount of weekend or holiday days in the
+      // range, add the amount to the duration of the event
       if (fullyScheduledDaysDuringRange !== 0) {
         eventNewEnd = addDays(eventNewEnd, fullyScheduledDaysDuringRange);
       }
@@ -164,6 +203,13 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
       ...(!event.rrule
         ? {}
         : {
+            // Intentionally do not respect the EXDATE entries, because
+            // they often correspond to holidays, which will be different
+            // based on the new date range
+            //
+            // If EXDATEs should be generated for the new holidays in the
+            // range, these dates could be possibly generated from
+            // the data in the `holidayEvents` array
             repeating: new RRule({
               ...event.rrule.options,
               dtstart: eventNewStart,
@@ -180,6 +226,7 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
   nextAvailableDate.isFullyScheduled = true;
 });
 
+// Add full-day events for holidays
 holidayEvents.forEach((holiday) => {
   calendar.createEvent({
     start: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 09:00`),
