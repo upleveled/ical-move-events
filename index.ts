@@ -114,13 +114,48 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
   }
 
   events.forEach((event) => {
-    const daysDifference = differenceInDays(
+    const daysDifferenceStart = differenceInDays(
       nextAvailableDate.date,
       new Date(startDate),
     );
 
-    const eventNewStart = addDays(event.start, daysDifference);
-    const eventNewEnd = addDays(event.end, daysDifference);
+    const businessDaysDuration =
+      Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) || 1;
+
+    const eventNewStart = addDays(event.start, daysDifferenceStart);
+
+    let eventNewEnd: Date;
+    if (businessDaysDuration === 1) {
+      eventNewEnd = addDays(event.end, daysDifferenceStart);
+    } else {
+      // Calculate the earliest possible new start
+      // date based on the new event start date
+      //
+      // This means that this only supports full-day
+      // multi-day events (because the time from the
+      // end date will be discarded)
+      eventNewEnd = addDays(eventNewStart, businessDaysDuration);
+
+      // Find the number of weekend and holiday days
+      // during the range, so the end date can be
+      // adjusted if necessary
+      const fullyScheduledDaysDuringRange = availableDates.filter(
+        ({ isFullyScheduled, date }) => {
+          return (
+            eventNewStart.getTime() <= date.getTime() &&
+            eventNewEnd.getTime() >= date.getTime() &&
+            isFullyScheduled
+          );
+        },
+      ).length;
+
+      // If there are a non-zero amount of weekend
+      // or holiday days in the range, add the
+      // amount to the duration of the event
+      if (fullyScheduledDaysDuringRange !== 0) {
+        eventNewEnd = addDays(eventNewEnd, fullyScheduledDaysDuringRange);
+      }
+    }
 
     calendar.createEvent({
       start: eventNewStart,

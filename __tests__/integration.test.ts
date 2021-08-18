@@ -46,7 +46,7 @@ test('throws error if output file location already exists', () => {
   rmSync(outputIcsFilePath);
 });
 
-test('moves calendar entries and saves file, taking into account timezone change from Daylight Savings Time', () => {
+test('moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time', () => {
   const { stdout } = execa.commandSync(
     `yarn dev ${inputIcsFilePath} --start 2021-11-01 --end 2021-11-12`,
   );

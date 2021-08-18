@@ -28,6 +28,8 @@ icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holidays-ical htt
 icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holiday-title 'Public holiday'
 ```
 
+`icalmv` assumes that everything is a single day event, unless the duration is specified in parentheses in the event title, like so: `Final Project (25 days)`
+
 ## Development
 
 During development, run `icalmv` using `yarn dev`, with all other arguments staying the same:
