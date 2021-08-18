@@ -185,7 +185,7 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
         ({ isFullyScheduled, date }) => {
           return (
             eventNewStart.getTime() <= date.getTime() &&
-            eventNewEnd.getTime() >= date.getTime() &&
+            eventNewEnd.getTime() > date.getTime() &&
             isFullyScheduled
           );
         },
