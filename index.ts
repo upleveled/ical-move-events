@@ -46,7 +46,7 @@ const holidayEvents =
             !(event.summary as any)?.val.includes('Regional') &&
             // Only holiday events during the specified range
             startOfDayStart.getTime() <= event.start.getTime() &&
-            startOfDayEnd.getTime() >= event.start.getTime(),
+            startOfDayEnd.getTime() >= event.end.getTime(),
         ) as icalParser.VEvent[]
       ).sort((a, b) => {
         return a.start.getTime() - b.start.getTime();
