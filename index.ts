@@ -29,7 +29,7 @@ const {
 
 if (!inputIcalFile || !start || !end) {
   console.error(`Error: Please specify an input file, start date and end date. Eg:
-$ yarn start calendar.ics --start 2020-05-21 --end 2020-08-15`);
+$ icalmv calendar.ics --start 2020-05-21 --end 2020-08-15`);
   process.exit(1);
 }
 
