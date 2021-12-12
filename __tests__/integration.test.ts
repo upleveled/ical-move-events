@@ -1,4 +1,4 @@
-import execa from 'execa';
+import { execaCommandSync } from 'execa';
 // Can't use node: prefix yet
 // PR: https://github.com/facebook/jest/pull/11331
 // Issue: https://github.com/facebook/jest/issues/11339
@@ -24,11 +24,11 @@ function getNormalizedOutputFileContents() {
 
 // Set timezone on GitHub Actions
 if (process.platform === 'linux') {
-  execa.commandSync('sudo timedatectl set-timezone Europe/Vienna');
+  execaCommandSync('sudo timedatectl set-timezone Europe/Vienna');
 }
 
 test('moves calendar entries and saves file', () => {
-  const { stdout } = execa.commandSync(
+  const { stdout } = execaCommandSync(
     `yarn dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
   );
   expect(stdout).toMatchSnapshot();
@@ -38,7 +38,7 @@ test('moves calendar entries and saves file', () => {
 });
 
 test('throws error if output file location already exists', () => {
-  const { stderr } = execa.commandSync(
+  const { stderr } = execaCommandSync(
     `yarn dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
     { reject: false },
   );
@@ -47,7 +47,7 @@ test('throws error if output file location already exists', () => {
 });
 
 test('moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time', () => {
-  const { stdout } = execa.commandSync(
+  const { stdout } = execaCommandSync(
     `yarn dev ${inputIcsFilePath} --start 2021-11-01 --end 2021-11-12`,
   );
   expect(stdout).toMatchSnapshot();
