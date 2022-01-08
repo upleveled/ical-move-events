@@ -152,7 +152,11 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
   );
 
   if (!nextAvailableDate) {
-    throw new Error('No next available date!');
+    console.error(
+      `Warning: Dropping events on start date ${startDate} (no available dates in time range):`,
+      events.map(({ summary }) => summary),
+    );
+    return;
   }
 
   events.forEach((event) => {
