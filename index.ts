@@ -65,6 +65,13 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
+const parsedCalendar = await icalParser.parseFile(inputIcalFile);
+const timezone = (
+  Object.values(parsedCalendar).filter(
+    (calendarComponent) => calendarComponent.type === 'VTIMEZONE',
+  )[0] as icalParser.VTimeZone
+).tzid;
+
 /**
  * An object with:
  * - keys: derived from the start of the day upon which the events take place
@@ -102,7 +109,7 @@ if (existsSync(outputIcalFile)) {
  * ```
  */
 const eventsByStartDates = (
-  Object.values(await icalParser.parseFile(inputIcalFile)).filter(
+  Object.values(parsedCalendar).filter(
     (event) => event.type === 'VEVENT',
   ) as icalParser.VEvent[]
 )
@@ -225,6 +232,7 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
     }
 
     calendar.createEvent({
+      ...(timezone ? { timezone: timezone } : {}),
       start: eventNewStart,
       ...(!event.rrule || !event.rrule.options.until
         ? {}
