@@ -205,7 +205,7 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
 
     calendar.createEvent({
       start: eventNewStart,
-      ...(!event.rrule
+      ...(!event.rrule || !event.rrule.options.until
         ? {}
         : {
             // Intentionally do not respect the EXDATE entries, because
@@ -217,7 +217,11 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
             // the data in the `holidayEvents` array
             repeating: new RRule({
               ...event.rrule.options,
-              dtstart: eventNewStart,
+              dtstart: null,
+              byhour: null,
+              byminute: null,
+              bysecond: null,
+              until: addDays(event.rrule.options.until, daysDifferenceStart),
             }).toString(),
           }),
       end: eventNewEnd,
