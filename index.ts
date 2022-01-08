@@ -185,25 +185,43 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
       //
       // This means that this only supports full-day multi-day events
       // (because the time from the end date will be discarded)
-      eventNewEnd = addDays(eventNewStart, businessDaysDuration);
+      let fullyScheduledDaysDuringRange = 0;
+      let eventDurationContainsCorrectBusinessDays;
 
-      // Find the number of weekend and holiday days during the range,
-      // so the end date can be adjusted if necessary
-      const fullyScheduledDaysDuringRange = availableDates.filter(
-        ({ isFullyScheduled, date }) => {
-          return (
-            eventNewStart.getTime() <= date.getTime() &&
-            eventNewEnd.getTime() > date.getTime() &&
-            isFullyScheduled
-          );
-        },
-      ).length;
+      do {
+        eventNewEnd = addDays(
+          eventNewStart,
+          businessDaysDuration + fullyScheduledDaysDuringRange,
+        );
 
-      // If there are a non-zero amount of weekend or holiday days in the
-      // range, add the amount to the duration of the event
-      if (fullyScheduledDaysDuringRange !== 0) {
-        eventNewEnd = addDays(eventNewEnd, fullyScheduledDaysDuringRange);
-      }
+        // Find the number of weekend and holiday days during the range,
+        // so the end date can be adjusted if necessary
+        const recalculatedFullyScheduledDaysDuringRange = availableDates.filter(
+          // This ESLint rule is disabled because it can result in
+          // false positives
+          // https://github.com/eslint/eslint/issues/5044
+          // eslint-disable-next-line no-loop-func
+          ({ isFullyScheduled, date }) => {
+            return (
+              eventNewStart.getTime() <= date.getTime() &&
+              eventNewEnd.getTime() > date.getTime() &&
+              isFullyScheduled
+            );
+          },
+        ).length;
+
+        // If there are more weekend or holiday days in the range than the last
+        // time it was calculated, add the amount to the duration of the event
+        if (
+          recalculatedFullyScheduledDaysDuringRange >
+          fullyScheduledDaysDuringRange
+        ) {
+          fullyScheduledDaysDuringRange =
+            recalculatedFullyScheduledDaysDuringRange;
+        } else {
+          eventDurationContainsCorrectBusinessDays = true;
+        }
+      } while (!eventDurationContainsCorrectBusinessDays);
     }
 
     calendar.createEvent({
