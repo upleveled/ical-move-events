@@ -169,7 +169,10 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
     // indicates the amount of non-weekend, non-holiday days
     // that this multi-day event requires
     const businessDaysDuration =
-      Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) || 1;
+      Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) ||
+      // If there is no amount of days in the event
+      // title, default to 1
+      1;
 
     const eventNewStart = addDays(event.start, daysDifferenceStart);
 
