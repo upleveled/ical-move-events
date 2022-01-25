@@ -11,6 +11,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+      - run: node --eval 'console.log(process.platform)'
       - run: yarn --frozen-lockfile
       - run: yarn eslint .
       - run: yarn tsc
