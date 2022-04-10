@@ -1,5 +1,5 @@
 diff --git a/node_modules/rrule/dist/esm/src/rrule.d.ts b/node_modules/rrule/dist/esm/src/rrule.d.ts
-index c9da82f..b01cd36 100644
+index c9da82f..20e27e5 100644
 --- a/node_modules/rrule/dist/esm/src/rrule.d.ts
 +++ b/node_modules/rrule/dist/esm/src/rrule.d.ts
 @@ -23,7 +23,7 @@ export declare const defaultKeys: ("freq" | "dtstart" | "interval" | "wkst" | "c
