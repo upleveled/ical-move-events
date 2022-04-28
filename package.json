@@ -30,7 +30,7 @@
     "date-fns": "2.28.0",
     "execa": "6.1.0",
     "ical-generator": "3.4.2",
-    "jest": "27.5.1",
+    "jest": "28.0.2",
     "mri": "1.2.0",
     "node-ical": "0.15.1",
     "rrule": "2.6.9"
@@ -51,7 +51,7 @@
     "@upleveled/eslint-config-upleveled": "2.9.1",
     "@upleveled/eslint-plugin-upleveled": "2.1.4",
     "babel-eslint": "10.1.0",
-    "babel-jest": "27.5.1",
+    "babel-jest": "28.0.2",
     "eslint": "8.14.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-import-resolver-typescript": "2.7.1",
