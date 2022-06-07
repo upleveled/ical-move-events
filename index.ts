@@ -244,8 +244,6 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
             // If EXDATEs should be generated for the new holidays in the
             // range, these dates could be possibly generated from
             // the data in the `holidayEvents` array
-            //
-            // @ts-ignore TS Types of rrule are currently broken, see https://github.com/jakubroztocil/rrule/issues/478#issuecomment-1148462507
             repeating: new RRule({
               ...event.rrule.options,
               dtstart: null,
