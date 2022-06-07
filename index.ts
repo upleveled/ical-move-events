@@ -5,7 +5,7 @@ import mri from 'mri';
 import icalParser from 'node-ical';
 import rrule from 'rrule';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/naming-convention -- rrule is still not pure ESM
 const { RRule } = rrule;
 
 // Not using named imports due to the Node.js ESM import problem

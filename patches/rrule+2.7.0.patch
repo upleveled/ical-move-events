@@ -1,0 +1,11 @@
+diff --git a/node_modules/rrule/dist/esm/src/index.d.ts b/node_modules/rrule/dist/esm/src/index.d.ts
+index b87e41e..0794ea6 100644
+--- a/node_modules/rrule/dist/esm/src/index.d.ts
++++ b/node_modules/rrule/dist/esm/src/index.d.ts
+@@ -20,5 +20,4 @@ export { Frequency, ByWeekday, Options } from './types';
+ export { Weekday, WeekdayStr } from './weekday';
+ export { RRuleStrOptions } from './rrulestr';
+ export { RRule, RRuleSet };
+-export default RRule;
+ //# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
