@@ -3,7 +3,10 @@ import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
 import mri from 'mri';
 import icalParser from 'node-ical';
-import RRule from 'rrule';
+import rrule from 'rrule';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- rrule TS types are stil broken https://github.com/jakubroztocil/rrule/pull/511
+const { RRule } = rrule;
 
 // Not using named imports due to the Node.js ESM import problem
 // https://github.com/date-fns/date-fns/issues/1781
@@ -241,6 +244,8 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
             // If EXDATEs should be generated for the new holidays in the
             // range, these dates could be possibly generated from
             // the data in the `holidayEvents` array
+            //
+            // @ts-ignore TS Types of rrule are currently broken, see https://github.com/jakubroztocil/rrule/issues/478#issuecomment-1148462507
             repeating: new RRule({
               ...event.rrule.options,
               dtstart: null,
