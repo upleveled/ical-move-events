@@ -6602,12 +6602,12 @@ rrule@2.6.4:
   optionalDependencies:
     luxon "^1.21.3"
 
-rrule@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/rrule/-/rrule-2.7.0.tgz#f985bae79102a08893885a81e551a4977c6e6bcc"
-  integrity sha512-PnSvdJLHrETO4qQxm9nlDvSxNfbPdDFbgdz2BSHXTP+IzHbdwSNvTHOeN0O9khiy91GjzWXyiVJhnPDOQvejNg==
+rrule@2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/rrule/-/rrule-2.7.1.tgz#2511e1aed0e96fb5acf831304cde97d2cb65d99e"
+  integrity sha512-4p20u/1U7WqR3Nb1hOUrm0u1nSI7sO93ZUVZEZ5HeF6Gr5OlJuyhwEGRvUHq8ZfrPsq5gfa5b9dqnUs/kPqpIw==
   dependencies:
-    tslib "^1.10.0"
+    tslib "^2.4.0"
 
 run-parallel@^1.1.9:
   version "1.2.0"

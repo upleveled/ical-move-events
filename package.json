@@ -33,7 +33,7 @@
     "jest": "28.1.2",
     "mri": "1.2.0",
     "node-ical": "0.15.1",
-    "rrule": "2.7.0"
+    "rrule": "2.7.1"
   },
   "devDependencies": {
     "@babel/core": "7.18.6",
