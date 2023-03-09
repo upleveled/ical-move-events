@@ -7,11 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: '7'
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-      - run: yarn --frozen-lockfile
-      - run: yarn eslint .
-      - run: yarn tsc
-      - run: yarn test
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm eslint .
+      - run: pnpm tsc
+      - run: pnpm test

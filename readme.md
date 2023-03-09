@@ -5,7 +5,7 @@ Move all events in an iCalendar file (`.ics` file) to a new starting date.
 ## Install
 
 ```sh
-yarn global add @upleveled/ical-move-events
+pnpm global add @upleveled/ical-move-events
 ```
 
 ## Usage
@@ -32,8 +32,8 @@ icalmv data/calendar.ics --start 2020-05-21 --end 2020-08-15 --holiday-title 'Pu
 
 ## Development
 
-During development, run `icalmv` using `yarn dev`, with all other arguments staying the same:
+During development, run `icalmv` using `pnpm dev`, with all other arguments staying the same:
 
 ```sh
-yarn dev data/calendar.ics --start 2020-05-21 --end 2020-08-15
+pnpm dev data/calendar.ics --start 2020-05-21 --end 2020-08-15
 ```
