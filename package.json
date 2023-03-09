@@ -22,9 +22,9 @@
   },
   "scripts": {
     "dev": "node --loader ts-node/esm/transpile-only.mjs index.ts",
-    "test": "NODE_OPTIONS=--experimental-vm-modules yarn jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules pnpm jest",
     "build": "tsc --project tsconfig.production.json",
-    "prepare": "patch-package && yarn build"
+    "prepare": "patch-package && pnpm build"
   },
   "dependencies": {
     "date-fns": "2.29.3",
