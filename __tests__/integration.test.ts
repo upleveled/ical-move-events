@@ -1,4 +1,4 @@
-import { readFileSync, rmSync } from 'node:fs';
+import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execaCommandSync } from 'execa';
@@ -10,6 +10,7 @@ const testsDir = relative(
 );
 const inputIcsFilePath = `${testsDir}/ical-move-events-input-calendar.ics`;
 const outputIcsFilePath = inputIcsFilePath.replace('.ics', '-moved.ics');
+rmSync(outputIcsFilePath, { force: true });
 
 function getNormalizedOutputFileContents() {
   return readFileSync(outputIcsFilePath, 'utf-8')
@@ -30,9 +31,11 @@ test('moves calendar entries and saves file', () => {
 
   const outputFileContents = getNormalizedOutputFileContents();
   expect(outputFileContents).toMatchSnapshot();
+  rmSync(outputIcsFilePath);
 });
 
 test('throws error if output file location already exists', () => {
+  writeFileSync(outputIcsFilePath, '')
   const { stderr } = execaCommandSync(
     `pnpm --silent dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
     { reject: false },

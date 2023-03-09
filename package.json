@@ -21,7 +21,7 @@
     "node": ">=14.8.0"
   },
   "scripts": {
-    "dev": "node --loader ts-node/esm/transpile-only.mjs index.ts",
+    "dev": "tsx index.ts",
     "build": "tsc --project tsconfig.production.json",
     "prepare": "pnpm build"
   },
@@ -64,7 +64,7 @@
     "stylelint-config-css-modules": "4.2.0",
     "stylelint-config-recommended": "10.0.1",
     "stylelint-config-recommended-scss": "9.0.1",
-    "ts-node": "10.9.1",
+    "tsx": "3.12.3",
     "typescript": "4.9.5",
     "vitest": "^0.29.2"
   },
