@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`moves calendar entries and saves file 1`] = `
-"$ node --loader ts-node/esm/transpile-only.mjs index.ts __tests__/ical-move-events-input-calendar.ics --start 2021-08-23 --end 2021-09-03
-Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"
+"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"
 `;
 
 exports[`moves calendar entries and saves file 2`] = `
@@ -186,8 +185,7 @@ END:VCALENDAR"
 `;
 
 exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 1`] = `
-"$ node --loader ts-node/esm/transpile-only.mjs index.ts __tests__/ical-move-events-input-calendar.ics --start 2021-11-01 --end 2021-11-12
-Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"
+"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"
 `;
 
 exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 2`] = `
