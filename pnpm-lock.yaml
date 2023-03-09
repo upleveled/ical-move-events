@@ -1,13 +1,5 @@
 lockfileVersion: 5.4
 
-overrides:
-  '@typescript-eslint/eslint-plugin': 5.54.0
-  '@typescript-eslint/parser': 5.54.0
-  eslint-plugin-import: 2.27.5
-  eslint-plugin-jsx-a11y: 6.7.1
-  eslint-plugin-react: 7.32.2
-  eslint-plugin-react-hooks: 4.6.0
-
 specifiers:
   '@babel/core': 7.21.0
   '@babel/eslint-parser': 7.19.1
