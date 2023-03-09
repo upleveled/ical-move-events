@@ -1,13 +1,7 @@
+import { readFileSync, rmSync } from 'node:fs';
+import { dirname, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { execaCommandSync } from 'execa';
-// Can't use node: prefix yet
-// PR: https://github.com/facebook/jest/pull/11331
-// Issue: https://github.com/facebook/jest/issues/11339
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import { readFileSync, rmSync } from 'fs';
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import { dirname, relative } from 'path';
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import { fileURLToPath } from 'url';
 
 const testsDir = relative(
   process.cwd(),
