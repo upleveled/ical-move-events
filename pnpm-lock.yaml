@@ -26,7 +26,7 @@ specifiers:
   eslint-plugin-security: 1.7.1
   eslint-plugin-sonarjs: 0.18.0
   eslint-plugin-testing-library: 5.10.2
-  eslint-plugin-unicorn: 45.0.2
+  eslint-plugin-unicorn: 46.0.0
   execa: 7.0.0
   ical-generator: 3.6.1
   node-ical: 0.16.0
@@ -51,7 +51,7 @@ devDependencies:
   '@types/react-dom': 18.0.11
   '@typescript-eslint/eslint-plugin': 5.54.1_mlk7dnz565t663n4razh6a6v6i
   '@typescript-eslint/parser': 5.54.1_ycpbpc6yetojsgtrx3mwntkhsu
-  '@upleveled/eslint-config-upleveled': 3.13.0_x4bvxd4s5rswlpuhfvnp2uutdu
+  '@upleveled/eslint-config-upleveled': 3.13.0_kpzcd2wqftoqeaxwzp6z6egkzi
   '@upleveled/eslint-plugin-upleveled': 2.1.6_eslint@8.35.0
   babel-eslint: 10.1.0_eslint@8.35.0
   eslint: 8.35.0
@@ -68,7 +68,7 @@ devDependencies:
   eslint-plugin-security: 1.7.1
   eslint-plugin-sonarjs: 0.18.0_eslint@8.35.0
   eslint-plugin-testing-library: 5.10.2_ycpbpc6yetojsgtrx3mwntkhsu
-  eslint-plugin-unicorn: 45.0.2_eslint@8.35.0
+  eslint-plugin-unicorn: 46.0.0_eslint@8.35.0
   patch-package: 6.5.1
   ts-node: 10.9.1_alpjt73dvgv6kni625hu7f2l4m
   typescript: 4.9.5
@@ -1994,7 +1994,7 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@upleveled/eslint-config-upleveled/3.13.0_x4bvxd4s5rswlpuhfvnp2uutdu:
+  /@upleveled/eslint-config-upleveled/3.13.0_kpzcd2wqftoqeaxwzp6z6egkzi:
     resolution: {integrity: sha512-josMEgMBkx5qpB8kN5JwwzM4mfbf5uX8fELuu0HFflnMO/uT4nCrC2E1J3t3iWdBfY9EUaGJ8DtH+vIIGxpALQ==}
     hasBin: true
     peerDependencies:
@@ -2051,7 +2051,7 @@ packages:
       eslint-plugin-security: 1.7.1
       eslint-plugin-sonarjs: 0.18.0_eslint@8.35.0
       eslint-plugin-testing-library: 5.10.2_ycpbpc6yetojsgtrx3mwntkhsu
-      eslint-plugin-unicorn: 45.0.2_eslint@8.35.0
+      eslint-plugin-unicorn: 46.0.0_eslint@8.35.0
       typescript: 4.9.5
     dev: true
 
@@ -3112,8 +3112,8 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-unicorn/45.0.2_eslint@8.35.0:
-    resolution: {integrity: sha512-Y0WUDXRyGDMcKLiwgL3zSMpHrXI00xmdyixEGIg90gHnj0PcHY4moNv3Ppje/kDivdAy5vUeUr7z211ImPv2gw==}
+  /eslint-plugin-unicorn/46.0.0_eslint@8.35.0:
+    resolution: {integrity: sha512-j07WkC+PFZwk8J33LYp6JMoHa1lXc1u6R45pbSAipjpfpb7KIGr17VE2D685zCxR5VL4cjrl65kTJflziQWMDA==}
     engines: {node: '>=14.18'}
     peerDependencies:
       eslint: '>=8.28.0'
