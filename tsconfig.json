@@ -1,29 +1,20 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "UpLeveled Node + React TSConfig",
+  "extends": "@upleveled/eslint-config-upleveled/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "esnext",
     "target": "es2020",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "strict": true
+    "module": "node16",
+    "moduleResolution": "node16"
   },
   "include": [
-    "next-env.d.ts",
+    "**/.eslintrc.cjs",
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "babel.config.cjs"
-  ],
-  "exclude": ["node_modules", "build"]
+    "**/*.jsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    ".next/types/**/*.ts",
+    "next-env.d.ts"
+  ]
 }

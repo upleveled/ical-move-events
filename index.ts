@@ -126,7 +126,7 @@ const eventsByStartDates = (
   .reduce((eventsByDay, event) => {
     const eventStartOfDay = startOfDay(event.start);
     eventsByDay[eventStartOfDay.toISOString()] ??= [];
-    eventsByDay[eventStartOfDay.toISOString()].push(event);
+    eventsByDay[eventStartOfDay.toISOString()]!.push(event);
     return eventsByDay;
   }, {} as Record<string, icalParser.VEvent[]>);
 
