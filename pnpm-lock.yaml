@@ -13,6 +13,7 @@ specifiers:
   '@babel/eslint-parser': 7.19.1
   '@babel/preset-env': 7.20.2
   '@babel/preset-typescript': 7.21.0
+  '@jest/types': ^29.5.0
   '@next/eslint-plugin-next': 13.2.3
   '@types/jest': 29.4.0
   '@types/mri': 1.1.1
@@ -65,6 +66,7 @@ devDependencies:
   '@babel/eslint-parser': 7.19.1_zt6cfucldurvbyn2isj445jria
   '@babel/preset-env': 7.20.2_@babel+core@7.21.0
   '@babel/preset-typescript': 7.21.0_@babel+core@7.21.0
+  '@jest/types': 29.5.0
   '@next/eslint-plugin-next': 13.2.3
   '@types/jest': 29.4.0
   '@types/mri': 1.1.1
