@@ -2,6 +2,7 @@ import { readFileSync, rmSync } from 'node:fs';
 import { dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execaCommandSync } from 'execa';
+import { expect, test } from 'vitest';
 
 const testsDir = relative(
   process.cwd(),
