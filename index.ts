@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
+import { parseArgs } from 'node:util';
 import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
-import mri from 'mri';
 import icalParser from 'node-ical';
 import rrule from 'rrule';
 
@@ -13,19 +13,23 @@ const { RRule } = rrule;
 const { addDays, differenceInDays, format, isWeekend, startOfDay } = dateFns;
 
 const {
-  _: [inputIcalFile],
-  start,
-  end,
-  'holidays-ical':
-    holidaysIcalUrl = 'https://www.officeholidays.com/ics-clean/austria',
-  'holiday-title': holidayTitle = '🎉 Holiday',
-} = mri(process.argv.slice(2)) as {
-  _: string[];
-  start?: string;
-  end?: string;
-  'holidays-ical'?: string;
-  'holiday-title'?: string;
-};
+  values: {
+    start,
+    end,
+    'holidays-ical':
+      holidaysIcalUrl = 'https://www.officeholidays.com/ics-clean/austria',
+    'holiday-title': holidayTitle = '🎉 Holiday',
+  },
+  positionals: [inputIcalFile],
+} = parseArgs({
+  options: {
+    start: { type: 'string' },
+    end: { type: 'string' },
+    'holidays-ical': { type: 'string' },
+    'holiday-title': { type: 'string' },
+  },
+  allowPositionals: true,
+});
 
 if (!inputIcalFile || !start || !end) {
   console.error(`Error: Please specify an input file, start date and end date. Eg:
