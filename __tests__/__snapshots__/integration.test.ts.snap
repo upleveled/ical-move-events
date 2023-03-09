@@ -371,7 +371,7 @@ END:VCALENDAR"
 `;
 
 exports[`throws error if output file location already exists 1`] = `
-"(node:) ExperimentalWarning: Custom ESM Loaders is an experimental feature. This feature could change at any time
+"(node:) ExperimentalWarning: Custom ESM Loaders is an experimental feature and might change at any time
 (Use \`node --trace-warnings ...\` to show where the warning was created)
 Error: Output file at __tests__/ical-move-events-input-calendar-moved.ics already exists!
 error Command failed with exit code 1."
