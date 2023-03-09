@@ -1,0 +1,13 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index f1b9eac9b0818b47e24d67fba3d1d9f12d2b2cc7..11b6a0365aca15ab9d2afc7ac1f9c27f17d6397a 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -36,7 +36,7 @@ import ICalCalendar, { ICalCalendarData } from './calendar';
+  * @param data Calendar data
+  */
+ declare function ical(data?: ICalCalendarData): ICalCalendar;
+-export default ical;
++export = ical;
+ export { default as ICalAlarm, ICalAlarmData, ICalAlarmType, ICalAlarmTypeValue, ICalAlarmJSONData, ICalAttachment } from './alarm';
+ export { default as ICalAttendee, ICalAttendeeData, ICalAttendeeType, ICalAttendeeRole, ICalAttendeeStatus, ICalAttendeeJSONData } from './attendee';
+ export { default as ICalCalendar, ICalCalendarData, ICalCalendarProdIdData, ICalCalendarMethod, ICalCalendarJSONData } from './calendar';
