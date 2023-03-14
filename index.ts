@@ -195,7 +195,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
     continue;
   }
 
-  events.forEach(({ event }) => {
+  for (const { event } of events) {
     const daysDifferenceStart = differenceInDays(
       nextAvailableDate.date,
       new Date(startDate),
@@ -288,7 +288,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       location: event.location,
       url: event.url,
     });
-  });
+  }
 
   nextAvailableDate.isFullyScheduled = true;
 }
