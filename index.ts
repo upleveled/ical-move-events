@@ -3,7 +3,11 @@ import { parseArgs } from 'node:util';
 import dateFns from 'date-fns';
 import icalGenerator from 'ical-generator';
 import icalParser from 'node-ical';
+import { remark } from 'remark';
+import extractFrontmatter from 'remark-extract-frontmatter';
+import remarkFrontmatter from 'remark-frontmatter';
 import rrule from 'rrule';
+import yaml from 'yaml';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention -- rrule is still not pure ESM
 const { RRule } = rrule;
@@ -76,6 +80,26 @@ const timezone = (
   )[0] as icalParser.VTimeZone
 ).tzid;
 
+const sortedNonHolidayEvents = (
+  Object.values(parsedCalendar).filter((event) => {
+    return event.type === 'VEVENT' && event.summary !== holidayTitle;
+  }) as icalParser.VEvent[]
+).sort((a, b) => {
+  return a.start.getTime() - b.start.getTime();
+});
+
+type EventsByStartDate = {
+  [startDateIsoString: string]: {
+    event: icalParser.VEvent;
+    schedule: null | {
+      startDate: {
+        day: 'last';
+        week: number;
+      };
+    };
+  }[];
+};
+
 /**
  * An object with:
  * - keys: derived from the start of the day upon which the events take place
@@ -112,23 +136,24 @@ const timezone = (
  * }
  * ```
  */
-const eventsByStartDates = (
-  Object.values(parsedCalendar).filter(
-    (event) => event.type === 'VEVENT',
-  ) as icalParser.VEvent[]
-)
-  .filter((event) => {
-    return event.summary !== holidayTitle;
-  })
-  .sort((a, b) => {
-    return a.start.getTime() - b.start.getTime();
-  })
-  .reduce((eventsByDay, event) => {
-    const eventStartOfDay = startOfDay(event.start);
-    eventsByDay[eventStartOfDay.toISOString()] ??= [];
-    eventsByDay[eventStartOfDay.toISOString()]!.push(event);
-    return eventsByDay;
-  }, {} as Record<string, icalParser.VEvent[]>);
+const eventsByStartDates: EventsByStartDate = {};
+
+for (const event of sortedNonHolidayEvents) {
+  const eventStartOfDay = startOfDay(event.start).toISOString();
+  eventsByStartDates[eventStartOfDay] ??= [];
+  eventsByStartDates[eventStartOfDay]!.push({
+    event: event,
+    schedule:
+      !event.description || !event.description.includes('---')
+        ? null
+        : ((
+            await remark()
+              .use(remarkFrontmatter)
+              .use(extractFrontmatter, { yaml: yaml.parse })
+              .process(event.description)
+          ).data as EventsByStartDate[string][number]['schedule']),
+  });
+}
 
 function startOfDayFromString(/** Eg. 2020-12-30 */ dateString: string) {
   return startOfDay(new Date(dateString));
@@ -157,7 +182,7 @@ const availableDates = [
 
 const calendar = icalGenerator();
 
-Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
+for (const [startDate, events] of Object.entries(eventsByStartDates)) {
   const nextAvailableDate = availableDates.find(
     ({ isFullyScheduled }) => !isFullyScheduled,
   );
@@ -165,12 +190,12 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
   if (!nextAvailableDate) {
     console.error(
       `Warning: Dropping events on start date ${startDate} (no available dates in time range):`,
-      events.map(({ summary }) => summary),
+      events.map(({ event }) => event.summary),
     );
-    return;
+    continue;
   }
 
-  events.forEach((event) => {
+  events.forEach(({ event }) => {
     const daysDifferenceStart = differenceInDays(
       nextAvailableDate.date,
       new Date(startDate),
@@ -266,16 +291,16 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
   });
 
   nextAvailableDate.isFullyScheduled = true;
-});
+}
 
 // Add full-day events for holidays
-holidayEvents.forEach((holiday) => {
+for (const holiday of holidayEvents) {
   calendar.createEvent({
     start: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 09:00`),
     end: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 18:00`),
     summary: holidayTitle,
   });
-});
+}
 
 calendar.saveSync(outputIcalFile);
 

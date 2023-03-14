@@ -311,7 +311,7 @@ DTEND:20210806T160000Z
 DTSTAMP:20230314T111831Z
 UID:4l1kuqfa3e06lvdtu6viaqvvqe@google.com
 CREATED:20230314T101825Z
-DESCRIPTION:{ "startDate": { "day": "last"\, "week": 1 } }
+DESCRIPTION:---\nstartDate: { day: 'last'\, week: 1 }\n---
 LAST-MODIFIED:20230314T111604Z
 LOCATION:
 SEQUENCE:0
@@ -325,7 +325,7 @@ DTEND:20210813T160000Z
 DTSTAMP:20230314T111831Z
 UID:0ndie6md51fm875seorn3da6ep@google.com
 CREATED:20230314T101911Z
-DESCRIPTION:{ "startDate": { "day": "last"\, "week": 2 } }
+DESCRIPTION:---\nstartDate: { day: 'last'\, week: 2 }\n---
 LAST-MODIFIED:20230314T111617Z
 LOCATION:
 SEQUENCE:0

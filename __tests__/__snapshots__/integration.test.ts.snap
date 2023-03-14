@@ -141,7 +141,7 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20210827T170000
 DTEND;TZID=Europe/Vienna:20210827T180000
 SUMMARY:Retro 1
-DESCRIPTION:{ startDate: { day: last\\\\, week: 1 } }
+DESCRIPTION:---\\\\nstartDate: { day: 'last'\\\\, week: 1 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 
@@ -195,7 +195,7 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20210902T170000
 DTEND;TZID=Europe/Vienna:20210902T180000
 SUMMARY:Retro 2
-DESCRIPTION:{ startDate: { day: last\\\\, week: 2 } }
+DESCRIPTION:---\\\\nstartDate: { day: 'last'\\\\, week: 2 }\\\\n---
 END:VEVENT
 END:VCALENDAR"
 `;
@@ -341,7 +341,7 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20211105T170000
 DTEND;TZID=Europe/Vienna:20211105T180000
 SUMMARY:Retro 1
-DESCRIPTION:{ startDate: { day: last\\\\, week: 1 } }
+DESCRIPTION:---\\\\nstartDate: { day: 'last'\\\\, week: 1 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 
@@ -395,7 +395,7 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20211111T170000
 DTEND;TZID=Europe/Vienna:20211111T180000
 SUMMARY:Retro 2
-DESCRIPTION:{ startDate: { day: last\\\\, week: 2 } }
+DESCRIPTION:---\\\\nstartDate: { day: 'last'\\\\, week: 2 }\\\\n---
 END:VEVENT
 END:VCALENDAR"
 `;
