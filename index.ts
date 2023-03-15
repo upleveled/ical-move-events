@@ -1,6 +1,14 @@
 import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import dateFns from 'date-fns';
+import {
+  addDays,
+  differenceInDays,
+  endOfDay,
+  format,
+  isWeekend,
+  min,
+  startOfDay,
+} from 'date-fns';
 import icalGenerator from 'ical-generator';
 import icalParser from 'node-ical';
 import { remark } from 'remark';
@@ -11,10 +19,6 @@ import yaml from 'yaml';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention -- rrule is still not pure ESM
 const { RRule } = rrule;
-
-// Not using named imports due to the Node.js ESM import problem
-// https://github.com/date-fns/date-fns/issues/1781
-const { addDays, differenceInDays, format, isWeekend, startOfDay } = dateFns;
 
 const {
   values: {
@@ -279,7 +283,12 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
               byhour: null,
               byminute: null,
               bysecond: null,
-              until: addDays(event.rrule.options.until, daysDifferenceStart),
+              until: min([
+                addDays(event.rrule.options.until, daysDifferenceStart),
+                // If the end date is earlier than the new calculated end
+                // date of the recurring event, use the end date instead
+                endOfDay(new Date(end)),
+              ]),
             }).toString(),
           }),
       end: eventNewEnd,
