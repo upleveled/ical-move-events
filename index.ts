@@ -11,7 +11,10 @@ import {
 } from 'date-fns';
 import icalGenerator from 'ical-generator';
 import icalParser from 'node-ical';
-import { RRule } from 'rrule';
+import rrule from 'rrule';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention -- rrule is still not pure ESM
+const { RRule } = rrule;
 
 const {
   values: {
