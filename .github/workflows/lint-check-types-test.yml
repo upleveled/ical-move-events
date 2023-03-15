@@ -16,6 +16,6 @@ jobs:
           node-version: '18'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm eslint .
+      - run: pnpm eslint . --max-warnings 0
       - run: pnpm tsc
       - run: pnpm vitest run
