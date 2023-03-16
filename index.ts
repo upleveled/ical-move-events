@@ -7,6 +7,7 @@ import {
   differenceInMinutes,
   differenceInWeeks,
   format,
+  getDay,
   isSameDay,
   isWeekend,
   lastDayOfWeek,
@@ -161,7 +162,7 @@ type EventsByStartDate = {
             }
           | {
               startDate: {
-                day: 'last' | 'first';
+                day: 'last' | number;
                 week: number;
               };
             }
@@ -317,15 +318,17 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
         ? availableDates.find((date) => {
             return (
               date.week === eventConstraints.startDate.week &&
-              eventConstraints.startDate.day === 'last' &&
-              isSameDay(
-                date.date,
-                lastDayOfWeek(
-                  date.date,
-                  // Avoid Saturday being the last day of the week
-                  { weekStartsOn: 6 },
-                ),
-              )
+              ((typeof eventConstraints.startDate.day === 'number' &&
+                getDay(date.date) === eventConstraints.startDate.day) ||
+                (eventConstraints.startDate.day === 'last' &&
+                  isSameDay(
+                    date.date,
+                    lastDayOfWeek(
+                      date.date,
+                      // Avoid Saturday being the last day of the week
+                      { weekStartsOn: 6 },
+                    ),
+                  )))
             );
           })?.date
         : null;

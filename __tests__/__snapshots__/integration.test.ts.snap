@@ -150,10 +150,10 @@ BEGIN:VEVENT
 
 SEQUENCE:0
 DTSTAMP:
-DTSTART;TZID=Europe/Vienna:20210823T140000
-DTEND;TZID=Europe/Vienna:20210823T150000
+DTSTART;TZID=Europe/Vienna:20210831T140000
+DTEND;TZID=Europe/Vienna:20210831T150000
 SUMMARY:Figma intro
-DESCRIPTION:---\\\\noptional: true\\\\n---
+DESCRIPTION:---\\\\noptional: true\\\\nstartDate: { week: 2\\\\, day: 2 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 
@@ -433,10 +433,10 @@ BEGIN:VEVENT
 
 SEQUENCE:0
 DTSTAMP:
-DTSTART;TZID=Europe/Vienna:20211101T140000
-DTEND;TZID=Europe/Vienna:20211101T150000
+DTSTART;TZID=Europe/Vienna:20211109T140000
+DTEND;TZID=Europe/Vienna:20211109T150000
 SUMMARY:Figma intro
-DESCRIPTION:---\\\\noptional: true\\\\n---
+DESCRIPTION:---\\\\noptional: true\\\\nstartDate: { week: 2\\\\, day: 2 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 
