@@ -2,7 +2,9 @@
 
 exports[`moves calendar entries and saves file 1`] = `"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"`;
 
-exports[`moves calendar entries and saves file 2`] = `
+exports[`moves calendar entries and saves file 2`] = `""`;
+
+exports[`moves calendar entries and saves file 3`] = `
 "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//sebbo.net//ical-generator//EN
@@ -275,7 +277,9 @@ END:VCALENDAR"
 
 exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 1`] = `"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"`;
 
-exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 2`] = `
+exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 2`] = `""`;
+
+exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 3`] = `
 "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//sebbo.net//ical-generator//EN
