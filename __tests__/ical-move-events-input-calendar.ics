@@ -62,7 +62,7 @@ LAST-MODIFIED:20230313T162621Z
 LOCATION:
 SEQUENCE:0
 STATUS:CONFIRMED
-SUMMARY:🏗 Project 1 (3 days)
+SUMMARY:🏗 Project 1 (pjct-react-1-landing-page-clone) (3 days)
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
@@ -255,7 +255,7 @@ DTEND;VALUE=DATE:20210806
 DTSTAMP:20230314T111831Z
 UID:508e9at8mni271735btebbfogl@google.com
 CREATED:20210814T160036Z
-DESCRIPTION:---\nrelativeStartDate: { event: ['pern-01-intro', 'start'], offset: 1 }\n---
+DESCRIPTION:---\nrelativeStartDate: { event: ['pjct-react-1-landing-page-clone', 'end'], offset: -1 }\n---
 LAST-MODIFIED:20230313T162803Z
 LOCATION:
 SEQUENCE:0

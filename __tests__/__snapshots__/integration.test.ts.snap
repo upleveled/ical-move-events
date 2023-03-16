@@ -2,7 +2,9 @@
 
 exports[`moves calendar entries and saves file 1`] = `"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"`;
 
-exports[`moves calendar entries and saves file 2`] = `
+exports[`moves calendar entries and saves file 2`] = `""`;
+
+exports[`moves calendar entries and saves file 3`] = `
 "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//sebbo.net//ical-generator//EN
@@ -30,7 +32,7 @@ SEQUENCE:0
 DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20210823T000000
 DTEND;TZID=Europe/Vienna:20210826T000000
-SUMMARY:🏗 Project 1 (3 days)
+SUMMARY:🏗 Project 1 (pjct-react-1-landing-page-clone) (3 days)
 DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pern-01-intro'\\\\, 'start'] }
  \\\\n---
 END:VEVENT
@@ -68,8 +70,8 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20210824T000000
 DTEND;TZID=Europe/Vienna:20210827T000000
 SUMMARY:🏗 Project 2 (stretch) (3 days)
-DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pern-01-intro'\\\\, 'start']\\\\,
-  offset: 1 }\\\\n---
+DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pjct-react-1-landing-page-c
+ lone'\\\\, 'end']\\\\, offset: -1 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 
@@ -275,7 +277,9 @@ END:VCALENDAR"
 
 exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 1`] = `"Calendar events updated and saved in __tests__/ical-move-events-input-calendar-moved.ics"`;
 
-exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 2`] = `
+exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 2`] = `""`;
+
+exports[`moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time 3`] = `
 "BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//sebbo.net//ical-generator//EN
@@ -303,7 +307,7 @@ SEQUENCE:0
 DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20211101T000000
 DTEND;TZID=Europe/Vienna:20211104T000000
-SUMMARY:🏗 Project 1 (3 days)
+SUMMARY:🏗 Project 1 (pjct-react-1-landing-page-clone) (3 days)
 DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pern-01-intro'\\\\, 'start'] }
  \\\\n---
 END:VEVENT
@@ -341,8 +345,8 @@ DTSTAMP:
 DTSTART;TZID=Europe/Vienna:20211102T000000
 DTEND;TZID=Europe/Vienna:20211105T000000
 SUMMARY:🏗 Project 2 (stretch) (3 days)
-DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pern-01-intro'\\\\, 'start']\\\\,
-  offset: 1 }\\\\n---
+DESCRIPTION:---\\\\nrelativeStartDate: { event: ['pjct-react-1-landing-page-c
+ lone'\\\\, 'end']\\\\, offset: -1 }\\\\n---
 END:VEVENT
 BEGIN:VEVENT
 

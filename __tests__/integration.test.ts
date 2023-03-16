@@ -24,10 +24,11 @@ if (process.platform === 'linux') {
 }
 
 test('moves calendar entries and saves file', () => {
-  const { stdout } = execaCommandSync(
+  const { stdout, stderr } = execaCommandSync(
     `pnpm --silent dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
   );
   expect(stdout).toMatchSnapshot();
+  expect(stderr).toMatchSnapshot();
 
   const outputFileContents = getNormalizedOutputFileContents();
   expect(outputFileContents).toMatchSnapshot();
@@ -45,10 +46,11 @@ test('throws error if output file location already exists', () => {
 });
 
 test('moves calendar entries and saves file, taking into account holiday and timezone change from Daylight Savings Time', () => {
-  const { stdout } = execaCommandSync(
+  const { stdout, stderr } = execaCommandSync(
     `pnpm --silent dev ${inputIcsFilePath} --start 2021-11-01 --end 2021-11-12`,
   );
   expect(stdout).toMatchSnapshot();
+  expect(stderr).toMatchSnapshot();
 
   const outputFileContents = getNormalizedOutputFileContents();
   expect(outputFileContents).toMatchSnapshot();

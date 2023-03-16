@@ -74,7 +74,7 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
-const parsedCalendar = await icalParser.parseFile(inputIcalFile);
+const parsedCalendar = icalParser.parseFile(inputIcalFile);
 const timezone = (
   Object.values(parsedCalendar).filter(
     (calendarComponent) => calendarComponent.type === 'VTIMEZONE',
@@ -300,9 +300,13 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
                 return icalEvent
                   .summary()
                   .includes(`(${eventConstraints.relativeStartDate.event[0]})`);
-              })
-              ?.[eventConstraints.relativeStartDate.event[1]]() as Date,
-            eventConstraints.relativeStartDate.offset || 0,
+              })!
+              [eventConstraints.relativeStartDate.event[1]]() as Date,
+            (eventConstraints.relativeStartDate.offset || 0) +
+              // If the event start should be relative to the end
+              // of another event, subtract 1 for full-day events
+              // ending at midnight (which is the start of the next day)
+              (eventConstraints.relativeStartDate.event[1] === 'end' ? -1 : 0),
           )
         : eventConstraints && 'startDate' in eventConstraints
         ? availableDates.find((date) => {
