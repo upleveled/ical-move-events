@@ -419,14 +419,11 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
     });
 
     if (businessDaysDuration === 1) {
+      // This intentionally leaves double commas (the trailing comma
+      // after the event schedule slots is not removed) in the string
+      // to allow for easier splitting later for the filler events
       firstAvailableDate.scheduleSlots =
-        firstAvailableDate.scheduleSlots.replace(
-          eventScheduleSlots.endsWith('1730')
-            ? eventScheduleSlots
-            : // Remove trailing comma after event schedule slots
-              `${eventScheduleSlots},`,
-          '',
-        );
+        firstAvailableDate.scheduleSlots.replace(eventScheduleSlots, '');
     }
   }
 }
