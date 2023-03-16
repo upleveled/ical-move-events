@@ -35,7 +35,7 @@ test('moves calendar entries and saves file', () => {
 });
 
 test('throws error if output file location already exists', () => {
-  writeFileSync(outputIcsFilePath, '')
+  writeFileSync(outputIcsFilePath, '');
   const { stderr } = execaCommandSync(
     `pnpm --silent dev ${inputIcsFilePath} --start 2021-08-23 --end 2021-09-03`,
     { reject: false },

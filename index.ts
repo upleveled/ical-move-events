@@ -2,19 +2,26 @@ import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import {
   addDays,
+  addMinutes,
   differenceInDays,
-  endOfDay,
+  differenceInMinutes,
+  differenceInWeeks,
   format,
+  isSameDay,
   isWeekend,
-  min,
+  lastDayOfWeek,
   startOfDay,
 } from 'date-fns';
 import icalGenerator from 'ical-generator';
-import icalParser from 'node-ical';
+import icalParser, { DateWithTimeZone } from 'node-ical';
+import { remark } from 'remark';
+import extractFrontmatter from 'remark-extract-frontmatter';
+import remarkFrontmatter from 'remark-frontmatter';
 import rrule from 'rrule';
+import yaml from 'yaml';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention -- rrule is still not pure ESM
-const { RRule } = rrule;
+// eslint-disable-next-line @typescript-eslint/naming-convention -- This fails with the Vitest tests rrule is still not pure ESM
+const { rrulestr } = rrule;
 
 const {
   values: {
@@ -60,12 +67,6 @@ const holidayEvents =
         return a.start.getTime() - b.start.getTime();
       });
 
-function isHoliday(date: Date) {
-  return holidayEvents.some(
-    (holiday) => holiday.start.getTime() === date.getTime(),
-  );
-}
-
 const outputIcalFile = inputIcalFile.replace('.ics', '-moved.ics');
 
 if (existsSync(outputIcalFile)) {
@@ -79,6 +80,89 @@ const timezone = (
     (calendarComponent) => calendarComponent.type === 'VTIMEZONE',
   )[0] as icalParser.VTimeZone
 ).tzid;
+
+const sortedNonHolidayEvents = (
+  Object.values(parsedCalendar).filter((event) => {
+    return (
+      event.type === 'VEVENT' &&
+      ![
+        holidayTitle,
+      ].includes(event.summary)
+    );
+  }) as icalParser.VEvent[]
+)
+  .flatMap(
+    // Convert recurring events to individual events
+    //
+    // Intentionally does not respect the EXDATE entries, because
+    // they often correspond to holidays, which will be different
+    // based on the new date range
+    //
+    // If EXDATEs should be generated for the new holidays in the
+    // range, these dates could be possibly generated from
+    // the data in the `holidayEvents` array
+    (event) => {
+      if (!event.rrule) return event;
+
+      const rruleSet = rrulestr(event.rrule.toString(), {
+        dtstart: event.start,
+        tzid: timezone,
+      });
+
+      delete event.rrule;
+
+      return rruleSet.all().map((date) => {
+        const startDate = date as unknown as DateWithTimeZone;
+        startDate.tz = timezone;
+
+        const endDate = addMinutes(
+          date,
+          differenceInMinutes(event.end, event.start),
+        ) as unknown as DateWithTimeZone;
+        endDate.tz = timezone;
+
+        return {
+          ...event,
+          start: startDate,
+          end: endDate,
+        };
+      });
+    },
+  )
+  .sort((a, b) => {
+    const aIsMultiDay = differenceInDays(a.end, a.start) > 0;
+    const bIsMultiDay = differenceInDays(b.end, b.start) > 0;
+
+    // Sort multi-day events to be the last events before the next day
+    if (aIsMultiDay && !bIsMultiDay) {
+      return 1;
+    } else if (!aIsMultiDay && bIsMultiDay) {
+      return -1;
+    }
+
+    // Sort by start date
+    return a.start.getTime() - b.start.getTime();
+  });
+
+type EventsByStartDate = {
+  [startDateIsoString: string]: {
+    event: icalParser.VEvent;
+    constraints:
+      | null
+      | {
+          relativeStartDate: {
+            event: [string, 'start' | 'end'];
+            offset?: number;
+          };
+        }
+      | {
+          startDate: {
+            day: 'last' | 'first';
+            week: number;
+          };
+        };
+  }[];
+};
 
 /**
  * An object with:
@@ -116,27 +200,31 @@ const timezone = (
  * }
  * ```
  */
-const eventsByStartDates = (
-  Object.values(parsedCalendar).filter(
-    (event) => event.type === 'VEVENT',
-  ) as icalParser.VEvent[]
-)
-  .filter((event) => {
-    return event.summary !== holidayTitle;
-  })
-  .sort((a, b) => {
-    return a.start.getTime() - b.start.getTime();
-  })
-  .reduce((eventsByDay, event) => {
-    const eventStartOfDay = startOfDay(event.start);
-    eventsByDay[eventStartOfDay.toISOString()] ??= [];
-    eventsByDay[eventStartOfDay.toISOString()]!.push(event);
-    return eventsByDay;
-  }, {} as Record<string, icalParser.VEvent[]>);
+const eventsByStartDates: EventsByStartDate = {};
+
+for (const event of sortedNonHolidayEvents) {
+  const eventStartOfDay = startOfDay(event.start).toISOString();
+  eventsByStartDates[eventStartOfDay] ??= [];
+  eventsByStartDates[eventStartOfDay]!.push({
+    event: event,
+    constraints:
+      !event.description || !event.description.includes('---')
+        ? null
+        : ((
+            await remark()
+              .use(remarkFrontmatter)
+              .use(extractFrontmatter, { yaml: yaml.parse })
+              .process(event.description)
+          ).data as EventsByStartDate[string][number]['constraints']),
+  });
+}
 
 function startOfDayFromString(/** Eg. 2020-12-30 */ dateString: string) {
   return startOfDay(new Date(dateString));
 }
+
+const allScheduleSlots =
+  '0900,0930,1000,1030,1100,1130,1200,1230,1300,1330,1400,1430,1500,1530,1600,1630,1700,1730';
 
 // Generate array of all dates between the start and end, including metadata
 // about whether the date falls on a weekend or holiday, in which case the
@@ -148,46 +236,123 @@ const availableDates = [
   ).keys(),
 ].map((daysToAdd) => {
   const date = addDays(startOfDayFromString(start), daysToAdd);
-  const dateIsWeekend = isWeekend(date);
-  const dateIsHoliday = isHoliday(date);
-  const isFullyScheduled = dateIsWeekend || dateIsHoliday;
   return {
     date: date,
-    isFullyScheduled: isFullyScheduled,
-    isWeekend: dateIsWeekend,
-    isHoliday: dateIsHoliday,
+    isWeekendOrHoliday:
+      isWeekend(date) ||
+      holidayEvents.some(
+        (holiday) => holiday.start.getTime() === date.getTime(),
+      ),
+    scheduleSlots: allScheduleSlots,
+    week: differenceInWeeks(date, startOfDayFromString(start)) + 1,
   };
 });
 
+/**
+ * Get an array of keys in unscheduledScheduleSlots that
+ * correspond to the required schedule slots for the event
+ *
+ * Eg.
+ *
+ * ```js
+ * getScheduleSlots({
+ *   start: new Date('2021-08-05T09:30:00.000Z'),
+ *   end: new Date('2021-08-05T10:30:00.000Z'),
+ * });
+ * // => '0930,1000'
+ * ```
+ */
+function getScheduleSlots(event: icalParser.VEvent) {
+  return allScheduleSlots
+    .split(',')
+    .filter((slot) => {
+      return (
+        slot >= format(event.start, 'HHmm') &&
+        slot <= format(addMinutes(event.end, -30), 'HHmm')
+      );
+    })
+    .join(',');
+}
+
 const calendar = icalGenerator();
 
-Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
-  const nextAvailableDate = availableDates.find(
-    ({ isFullyScheduled }) => !isFullyScheduled,
-  );
+for (const [startDate, events] of Object.entries(eventsByStartDates)) {
+  for (const { event, constraints: eventConstraints } of events) {
+    const eventScheduleSlots = getScheduleSlots(event);
 
-  if (!nextAvailableDate) {
-    console.error(
-      `Warning: Dropping events on start date ${startDate} (no available dates in time range):`,
-      events.map(({ summary }) => summary),
-    );
-    return;
-  }
-
-  events.forEach((event) => {
-    const daysDifferenceStart = differenceInDays(
-      nextAvailableDate.date,
-      new Date(startDate),
-    );
-
-    // The amount of days in parentheses in the event title, which
-    // indicates the amount of non-weekend, non-holiday days
-    // that this multi-day event requires
+    /**
+     * The amount of days in parentheses in the event title, which
+     * indicates the amount of non-weekend, non-holiday days
+     * that this multi-day event requires
+     */
     const businessDaysDuration =
       Number(event.summary.match(/ \((\d+) days?\)/)?.[1]) ||
       // If there is no amount of days in the event
       // title, default to 1
       1;
+
+    const eventConstraintDate =
+      eventConstraints && 'relativeStartDate' in eventConstraints
+        ? addDays(
+            calendar
+              .events()
+              .find((icalEvent) => {
+                return icalEvent
+                  .summary()
+                  .includes(`(${eventConstraints.relativeStartDate.event[0]})`);
+              })
+              ?.[eventConstraints.relativeStartDate.event[1]]() as Date,
+            eventConstraints.relativeStartDate.offset || 0,
+          )
+        : eventConstraints && 'startDate' in eventConstraints
+        ? availableDates.find((date) => {
+            return (
+              date.week === eventConstraints.startDate.week &&
+              eventConstraints.startDate.day === 'last' &&
+              isSameDay(
+                date.date,
+                lastDayOfWeek(
+                  date.date,
+                  // Avoid Saturday being the last day of the week
+                  { weekStartsOn: 6 },
+                ),
+              )
+            );
+          })?.date
+        : null;
+
+    const firstAvailableDate = availableDates.find((date) => {
+      const dateIncludesEventScheduleSlots =
+        date.scheduleSlots.includes(eventScheduleSlots);
+
+      if (eventConstraintDate) {
+        if (!isSameDay(date.date, eventConstraintDate)) return false;
+
+        if (businessDaysDuration === 1 && !dateIncludesEventScheduleSlots) {
+          throw new Error(
+            `Event "${event.summary}" has no available slots on ${format(
+              date.date,
+              'yyyy-MM-dd',
+            )}`,
+          );
+        }
+        return !date.isWeekendOrHoliday;
+      }
+
+      return !date.isWeekendOrHoliday && dateIncludesEventScheduleSlots;
+    });
+
+    if (!firstAvailableDate) {
+      console.error(
+        `Warning: Dropping event on original start date ${startDate} (no available dates in time range): ${event.summary}}`,
+      );
+      continue;
+    }
+
+    const daysDifferenceStart = differenceInDays(
+      firstAvailableDate.date,
+      new Date(startDate),
+    );
 
     const eventNewStart = addDays(event.start, daysDifferenceStart);
 
@@ -200,91 +365,76 @@ Object.entries(eventsByStartDates).forEach(([startDate, events]) => {
       //
       // This means that this only supports full-day multi-day events
       // (because the time from the end date will be discarded)
-      let fullyScheduledDaysDuringRange = 0;
-      let eventDurationContainsCorrectBusinessDays;
+      let weekendOrHolidaydDaysDuringRange = 0;
+      let eventDurationSpansCorrectBusinessDays = false;
 
       do {
         eventNewEnd = addDays(
           eventNewStart,
-          businessDaysDuration + fullyScheduledDaysDuringRange,
+          businessDaysDuration + weekendOrHolidaydDaysDuringRange,
         );
 
         // Find the number of weekend and holiday days during the range,
         // so the end date can be adjusted if necessary
-        const recalculatedFullyScheduledDaysDuringRange = availableDates.filter(
-          // This ESLint rule is disabled because it can result in
-          // false positives
-          // https://github.com/eslint/eslint/issues/5044
-          // eslint-disable-next-line no-loop-func
-          ({ isFullyScheduled, date }) => {
-            return (
-              eventNewStart.getTime() <= date.getTime() &&
-              eventNewEnd.getTime() > date.getTime() &&
-              isFullyScheduled
-            );
-          },
-        ).length;
+        const recalculatedWeekendOrHolidayDaysDuringRange =
+          availableDates.filter(
+            // ESLint rule disabled because it is a false positive for this function
+            // https://github.com/eslint/eslint/issues/5044
+            // eslint-disable-next-line no-loop-func
+            ({ isWeekendOrHoliday, date }) => {
+              return (
+                eventNewStart.getTime() <= date.getTime() &&
+                eventNewEnd.getTime() > date.getTime() &&
+                isWeekendOrHoliday
+              );
+            },
+          ).length;
 
         // If there are more weekend or holiday days in the range than the last
         // time it was calculated, add the amount to the duration of the event
         if (
-          recalculatedFullyScheduledDaysDuringRange >
-          fullyScheduledDaysDuringRange
+          recalculatedWeekendOrHolidayDaysDuringRange >
+          weekendOrHolidaydDaysDuringRange
         ) {
-          fullyScheduledDaysDuringRange =
-            recalculatedFullyScheduledDaysDuringRange;
+          weekendOrHolidaydDaysDuringRange =
+            recalculatedWeekendOrHolidayDaysDuringRange;
         } else {
-          eventDurationContainsCorrectBusinessDays = true;
+          eventDurationSpansCorrectBusinessDays = true;
         }
-      } while (!eventDurationContainsCorrectBusinessDays);
+      } while (!eventDurationSpansCorrectBusinessDays);
     }
 
     calendar.createEvent({
       ...(timezone ? { timezone: timezone } : {}),
       start: eventNewStart,
-      ...(!event.rrule || !event.rrule.options.until
-        ? {}
-        : {
-            // Intentionally do not respect the EXDATE entries, because
-            // they often correspond to holidays, which will be different
-            // based on the new date range
-            //
-            // If EXDATEs should be generated for the new holidays in the
-            // range, these dates could be possibly generated from
-            // the data in the `holidayEvents` array
-            repeating: new RRule({
-              ...event.rrule.options,
-              dtstart: null,
-              byhour: null,
-              byminute: null,
-              bysecond: null,
-              until: min([
-                addDays(event.rrule.options.until, daysDifferenceStart),
-                // If the end date is earlier than the new calculated end
-                // date of the recurring event, use the end date instead
-                endOfDay(new Date(end)),
-              ]),
-            }).toString(),
-          }),
       end: eventNewEnd,
       summary: event.summary,
       description: event.description,
       location: event.location,
       url: event.url,
     });
-  });
 
-  nextAvailableDate.isFullyScheduled = true;
-});
+    if (businessDaysDuration === 1) {
+      firstAvailableDate.scheduleSlots =
+        firstAvailableDate.scheduleSlots.replace(
+          eventScheduleSlots.endsWith('1730')
+            ? eventScheduleSlots
+            : // Remove trailing comma after event schedule slots
+              `${eventScheduleSlots},`,
+          '',
+        );
+    }
+  }
+}
 
 // Add full-day events for holidays
-holidayEvents.forEach((holiday) => {
+for (const holiday of holidayEvents) {
   calendar.createEvent({
     start: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 09:00`),
     end: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 18:00`),
     summary: holidayTitle,
   });
-});
+}
 
 calendar.saveSync(outputIcalFile);
 
