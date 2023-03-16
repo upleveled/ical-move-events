@@ -27,6 +27,7 @@ const {
   values: {
     start,
     end,
+    'filler-title': fillerTitle = 'Project Time',
     'holidays-ical':
       holidaysIcalUrl = 'https://www.officeholidays.com/ics-clean/austria',
     'holiday-title': holidayTitle = '🎉 Holiday',
@@ -36,6 +37,7 @@ const {
   options: {
     start: { type: 'string' },
     end: { type: 'string' },
+    'filler-title': { type: 'string' },
     'holidays-ical': { type: 'string' },
     'holiday-title': { type: 'string' },
   },
@@ -85,9 +87,7 @@ const sortedNonHolidayEvents = (
   Object.values(parsedCalendar).filter((event) => {
     return (
       event.type === 'VEVENT' &&
-      ![
-        holidayTitle,
-      ].includes(event.summary)
+      ![holidayTitle, fillerTitle].includes(event.summary)
     );
   }) as icalParser.VEvent[]
 )
@@ -149,18 +149,23 @@ type EventsByStartDate = {
     event: icalParser.VEvent;
     constraints:
       | null
-      | {
-          relativeStartDate: {
-            event: [string, 'start' | 'end'];
-            offset?: number;
-          };
-        }
-      | {
-          startDate: {
-            day: 'last' | 'first';
-            week: number;
-          };
-        };
+      | ({
+          optional?: true;
+        } & (
+          | Record<string, never>
+          | {
+              relativeStartDate: {
+                event: [string, 'start' | 'end'];
+                offset?: number;
+              };
+            }
+          | {
+              startDate: {
+                day: 'last' | 'first';
+                week: number;
+              };
+            }
+        ));
   }[];
 };
 
@@ -418,7 +423,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       url: event.url,
     });
 
-    if (businessDaysDuration === 1) {
+    if (businessDaysDuration === 1 && !eventConstraints?.optional) {
       // This intentionally leaves double commas (the trailing comma
       // after the event schedule slots is not removed) in the string
       // to allow for easier splitting later for the filler events
@@ -435,6 +440,50 @@ for (const holiday of holidayEvents) {
     end: new Date(`${format(holiday.start, 'yyyy-MM-dd')} 18:00`),
     summary: holidayTitle,
   });
+}
+
+for (const availableDate of availableDates) {
+  if (availableDate.isWeekendOrHoliday) continue;
+
+  availableDate.scheduleSlots = availableDate.scheduleSlots
+    // Ensure string has maximum 2 commas for string splitting
+    .replace(/\b(,,),+/g, '$1')
+    // Remove leading and trailing commas
+    .replace(/^,*([^,].+[^,]),*$/, '$1');
+
+  if (
+    !availableDate.scheduleSlots ||
+    /^,+$/.test(availableDate.scheduleSlots)
+  ) {
+    continue;
+  }
+
+  for (const slot of availableDate.scheduleSlots.split(',,')) {
+    const [fillerStart, ...rest] = slot
+      // Remove leading and trailing commas
+      .replace(/^,*([^,].+[^,]),*$/, '$1')
+      .split(',');
+
+    const fillerEnd = rest.at(-1);
+    calendar.createEvent({
+      start: new Date(
+        `${format(availableDate.date, 'yyyy-MM-dd')} ${fillerStart!.replace(
+          /^(\d{2})/,
+          '$1:',
+        )}`,
+      ),
+      end: addMinutes(
+        new Date(
+          `${format(availableDate.date, 'yyyy-MM-dd')} ${fillerEnd!.replace(
+            /^(\d{2})/,
+            '$1:',
+          )}`,
+        ),
+        30,
+      ),
+      summary: fillerTitle,
+    });
+  }
 }
 
 calendar.saveSync(outputIcalFile);
