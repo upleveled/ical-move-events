@@ -74,7 +74,7 @@ if (existsSync(outputIcalFile)) {
   process.exit(1);
 }
 
-const parsedCalendar = await icalParser.parseFile(inputIcalFile);
+const parsedCalendar = icalParser.parseFile(inputIcalFile);
 const timezone = (
   Object.values(parsedCalendar).filter(
     (calendarComponent) => calendarComponent.type === 'VTIMEZONE',
