@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "date-fns": "2.29.3",
-    "execa": "7.1.0",
+    "execa": "7.1.1",
     "ical-generator": "3.6.1",
     "node-ical": "0.16.0",
     "remark": "14.0.2",
@@ -63,7 +63,7 @@
     "eslint-plugin-unicorn": "46.0.0",
     "tsx": "3.12.5",
     "typescript": "5.0.2",
-    "vitest": "0.29.2"
+    "vitest": "0.29.3"
   },
   "pnpm": {
     "patchedDependencies": {
