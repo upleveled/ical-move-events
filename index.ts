@@ -7,10 +7,8 @@ import {
   differenceInMinutes,
   differenceInWeeks,
   format,
-  getDay,
   isSameDay,
   isWeekend,
-  lastDayOfWeek,
   startOfDay,
 } from 'date-fns';
 import icalGenerator from 'ical-generator';
@@ -315,22 +313,17 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
               (eventConstraints.relativeStartDate.event[1] === 'end' ? -1 : 0),
           )
         : eventConstraints && 'startDate' in eventConstraints
-        ? availableDates.find((date) => {
-            return (
-              date.week === eventConstraints.startDate.week &&
-              ((typeof eventConstraints.startDate.day === 'number' &&
-                getDay(date.date) === eventConstraints.startDate.day) ||
-                (eventConstraints.startDate.day === 'last' &&
-                  isSameDay(
-                    date.date,
-                    lastDayOfWeek(
-                      date.date,
-                      // Avoid Saturday being the last day of the week
-                      { weekStartsOn: 6 },
-                    ),
-                  )))
-            );
-          })?.date
+        ? availableDates
+            .filter(
+              (date) =>
+                !date.isWeekendOrHoliday &&
+                date.week === eventConstraints.startDate.week,
+            )
+            .at(
+              eventConstraints.startDate.day === 'last'
+                ? -1
+                : eventConstraints.startDate.day - 1,
+            )?.date
         : null;
 
     const firstAvailableDate = availableDates.find((date) => {
