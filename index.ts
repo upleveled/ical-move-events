@@ -340,7 +340,10 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       if (eventConstraintDate) {
         if (!isSameDay(date.date, eventConstraintDate)) return false;
 
-        if (businessDaysDuration === 1 && !dateIncludesEventScheduleSlots) {
+        if (
+          businessDaysDuration === 1 &&
+          (!dateIncludesEventScheduleSlots || date.isWeekendOrHoliday)
+        ) {
           throw new Error(
             `Event "${event.summary}" has no available slots on ${format(
               date.date,
@@ -348,7 +351,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
             )}`,
           );
         }
-        return !date.isWeekendOrHoliday;
+        return true;
       }
 
       return !date.isWeekendOrHoliday && dateIncludesEventScheduleSlots;
