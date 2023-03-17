@@ -322,7 +322,8 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
             .at(
               eventConstraints.startDate.day === 'last'
                 ? -1
-                : eventConstraints.startDate.day - 1,
+                : // eventConstraints.startDate.day is 1-indexed
+                  eventConstraints.startDate.day - 1,
             )?.date
         : null;
 
