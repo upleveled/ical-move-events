@@ -8,6 +8,7 @@ import {
   differenceInMinutes,
   differenceInWeeks,
   format,
+  isSameDay,
   isWeekend,
   startOfDay,
 } from 'date-fns';
@@ -333,7 +334,8 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
 
       if (eventConstraintStartDate) {
         return (
-          date.date >= eventConstraintStartDate &&
+          (isSameDay(date.date, eventConstraintStartDate) ||
+            date.date > eventConstraintStartDate) &&
           !date.isWeekendOrHoliday &&
           // All-day events are excluded from schedule slots checks
           (differenceInHours(event.end, event.start) >= 24 ||
