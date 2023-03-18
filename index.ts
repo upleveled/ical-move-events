@@ -457,7 +457,7 @@ for (const availableDate of availableDates) {
       .replace(/^,*([^,].+[^,]),*$/, '$1')
       .split(',');
 
-    const fillerEnd = rest.at(-1);
+    const fillerEnd = rest.at(-1) || fillerStart;
     calendar.createEvent({
       start: new Date(
         `${format(availableDate.date, 'yyyy-MM-dd')} ${fillerStart!.replace(
