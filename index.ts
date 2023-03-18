@@ -160,7 +160,7 @@ type EventsByStartDate = {
             }
           | {
               startDate: {
-                day: 'last' | number;
+                day: number;
                 week: number;
               };
             }
@@ -320,10 +320,10 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
                 date.week === eventConstraints.startDate.week,
             )
             .at(
-              eventConstraints.startDate.day === 'last'
-                ? -1
-                : // eventConstraints.startDate.day is 1-indexed
-                  eventConstraints.startDate.day - 1,
+              eventConstraints.startDate.day > 0
+                ? // eventConstraints.startDate.day is 1-indexed for positive numbers
+                  eventConstraints.startDate.day - 1
+                : eventConstraints.startDate.day,
             )?.date
         : null;
 
