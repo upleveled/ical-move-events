@@ -4,10 +4,10 @@ import {
   addDays,
   addMinutes,
   differenceInDays,
+  differenceInHours,
   differenceInMinutes,
   differenceInWeeks,
   format,
-  isSameDay,
   isWeekend,
   startOfDay,
 } from 'date-fns';
@@ -295,7 +295,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       // title, default to 1
       1;
 
-    const eventConstraintDate =
+    const eventConstraintStartDate =
       eventConstraints && 'relativeStartDate' in eventConstraints
         ? addDays(
             calendar
@@ -331,21 +331,14 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       const dateIncludesEventScheduleSlots =
         date.scheduleSlots.includes(eventScheduleSlots);
 
-      if (eventConstraintDate) {
-        if (!isSameDay(date.date, eventConstraintDate)) return false;
-
-        if (
-          businessDaysDuration === 1 &&
-          (!dateIncludesEventScheduleSlots || date.isWeekendOrHoliday)
-        ) {
-          throw new Error(
-            `Event "${event.summary}" has no available slots on ${format(
-              date.date,
-              'yyyy-MM-dd',
-            )}`,
-          );
-        }
-        return true;
+      if (eventConstraintStartDate) {
+        return (
+          date.date >= eventConstraintStartDate &&
+          !date.isWeekendOrHoliday &&
+          // All-day events are excluded from schedule slots checks
+          (differenceInHours(event.end, event.start) >= 24 ||
+            dateIncludesEventScheduleSlots)
+        );
       }
 
       return !date.isWeekendOrHoliday && dateIncludesEventScheduleSlots;
