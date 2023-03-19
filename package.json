@@ -28,7 +28,7 @@
   "dependencies": {
     "date-fns": "2.29.3",
     "execa": "7.1.1",
-    "ical-generator": "3.6.1",
+    "ical-generator": "4.0.0-develop.1",
     "node-ical": "0.16.0",
     "remark": "14.0.2",
     "remark-extract-frontmatter": "3.2.0",
@@ -64,10 +64,5 @@
     "tsx": "3.12.5",
     "typescript": "5.0.2",
     "vitest": "0.29.3"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "ical-generator@3.6.1": "patches/ical-generator@3.6.1.patch"
-    }
   }
 }

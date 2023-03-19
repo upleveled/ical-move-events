@@ -1,10 +1,5 @@
 lockfileVersion: 5.4
 
-patchedDependencies:
-  ical-generator@3.6.1:
-    hash: zynhsthr5wseeacj3sm6mjyi44
-    path: patches/ical-generator@3.6.1.patch
-
 specifiers:
   '@babel/eslint-parser': 7.21.3
   '@next/eslint-plugin-next': 13.2.4
@@ -32,7 +27,7 @@ specifiers:
   eslint-plugin-testing-library: 5.10.2
   eslint-plugin-unicorn: 46.0.0
   execa: 7.1.1
-  ical-generator: 3.6.1
+  ical-generator: 4.0.0-develop.1
   node-ical: 0.16.0
   remark: 14.0.2
   remark-extract-frontmatter: 3.2.0
@@ -46,7 +41,7 @@ specifiers:
 dependencies:
   date-fns: 2.29.3
   execa: 7.1.1
-  ical-generator: 3.6.1_zynhsthr5wseeacj3sm6mjyi44_z37vv5uro7e3netonid5vc46si
+  ical-generator: 4.0.0-develop.1_z37vv5uro7e3netonid5vc46si
   node-ical: 0.16.0
   remark: 14.0.2
   remark-extract-frontmatter: 3.2.0
@@ -3824,8 +3819,8 @@ packages:
     engines: {node: '>=14.18.0'}
     dev: false
 
-  /ical-generator/3.6.1_zynhsthr5wseeacj3sm6mjyi44_z37vv5uro7e3netonid5vc46si:
-    resolution: {integrity: sha512-tEH0OTNn00Mp61DcTxIFR+5fhsAivKk1LWAJUAbkMCI+M4yu+cZzT5X8rZf3b5PzFkMogh0zj3PsFh9bHvGGIQ==}
+  /ical-generator/4.0.0-develop.1_z37vv5uro7e3netonid5vc46si:
+    resolution: {integrity: sha512-uLAbUHVLFQRlBzkYpboubaSEGCnv3OcrLHFjfsMp/Yi4ZFgoL59yR8ynu5ALZcCR18ATUtfs7WqHV0l1BTWghg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@touch4it/ical-timezones': '>=1.6.0'
@@ -3861,7 +3856,6 @@ packages:
       rrule: 2.7.2
       uuid-random: 1.3.2
     dev: false
-    patched: true
 
   /ignore/5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
