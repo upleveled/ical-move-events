@@ -11,6 +11,7 @@ import {
   format,
   isSameDay,
   isWeekend,
+  min,
   startOfDay,
 } from 'date-fns';
 import icalGenerator from 'ical-generator';
@@ -386,10 +387,13 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
       let eventDurationSpansCorrectBusinessDays = false;
 
       do {
-        eventNewEnd = addDays(
-          eventNewStart,
-          businessDaysDuration + weekendOrHolidaydDaysDuringRange,
-        );
+        eventNewEnd = min([
+          addDays(
+            eventNewStart,
+            businessDaysDuration + weekendOrHolidaydDaysDuringRange,
+          ),
+          startOfDay(addDays(new Date(end), 1)),
+        ]);
 
         // Find the number of weekend and holiday days during the range,
         // so the end date can be adjusted if necessary
