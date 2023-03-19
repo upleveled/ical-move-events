@@ -419,9 +419,10 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
         ) {
           weekendOrHolidaydDaysDuringRange =
             recalculatedWeekendOrHolidayDaysDuringRange;
-        } else {
-          eventDurationSpansCorrectBusinessDays = true;
+          continue;
         }
+
+        eventDurationSpansCorrectBusinessDays = true;
       } while (!eventDurationSpansCorrectBusinessDays);
     }
 
