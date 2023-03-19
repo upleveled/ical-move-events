@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import {
+  addBusinessDays,
   addDays,
   addMinutes,
   differenceInDays,
@@ -309,7 +310,8 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
 
     const eventConstraintStartDate =
       eventConstraints && 'relativeStartDate' in eventConstraints
-        ? addDays(
+        ? // TODO: Make this calculation also respect holidays
+          addBusinessDays(
             calendar
               .events()
               .find((icalEvent) => {
