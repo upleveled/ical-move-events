@@ -111,12 +111,23 @@ const sortedNonHolidayEvents = (
 
       delete event.rrule;
 
-      return rruleSet.all().map((date) => {
-        const startDate = date as unknown as DateWithTimeZone;
+      const allRecurringEvents = rruleSet.all();
+      const startTimeZoneOffset = allRecurringEvents[0]!.getTimezoneOffset();
+
+      return allRecurringEvents.map((date) => {
+        // Fix time zone offset for recurring events in
+        // a series that spans over the switch to daylight
+        // savings time / summer time
+        const startDate = new Date(
+          date.getTime() -
+            Math.abs(startTimeZoneOffset - date.getTimezoneOffset()) *
+              60 *
+              1000,
+        ) as unknown as DateWithTimeZone;
         startDate.tz = timezone;
 
         const endDate = addMinutes(
-          date,
+          startDate,
           differenceInMinutes(event.end, event.start),
         ) as unknown as DateWithTimeZone;
         endDate.tz = timezone;
