@@ -27,7 +27,7 @@ specifiers:
   eslint-plugin-testing-library: 5.10.2
   eslint-plugin-unicorn: 46.0.0
   execa: 7.1.1
-  ical-generator: 4.0.0-develop.2
+  ical-generator: 4.0.0-develop.1
   node-ical: 0.16.0
   remark: 14.0.2
   remark-extract-frontmatter: 3.2.0
@@ -41,7 +41,7 @@ specifiers:
 dependencies:
   date-fns: 2.29.3
   execa: 7.1.1
-  ical-generator: 4.0.0-develop.2_d3dt2ifvdw6vniop26numoatge
+  ical-generator: 4.0.0-develop.1_d3dt2ifvdw6vniop26numoatge
   node-ical: 0.16.0
   remark: 14.0.2
   remark-extract-frontmatter: 3.2.0
@@ -3881,9 +3881,9 @@ packages:
     engines: {node: '>=14.18.0'}
     dev: false
 
-  /ical-generator/4.0.0-develop.2_d3dt2ifvdw6vniop26numoatge:
-    resolution: {integrity: sha512-eeSc0PFUJ2Y91V0oQ3unk0rsr8I1KoTSyrfqWaNK7oL9iaA6NUdPdWmca84vvkfpdNLu6c9aciBaFquQo0WSPQ==}
-    engines: {node: ^14.8.0 || >=16.0.0}
+  /ical-generator/4.0.0-develop.1_d3dt2ifvdw6vniop26numoatge:
+    resolution: {integrity: sha512-uLAbUHVLFQRlBzkYpboubaSEGCnv3OcrLHFjfsMp/Yi4ZFgoL59yR8ynu5ALZcCR18ATUtfs7WqHV0l1BTWghg==}
+    engines: {node: '>=12.0.0'}
     peerDependencies:
       '@touch4it/ical-timezones': '>=1.6.0'
       '@types/luxon': '>= 1.26.0'
