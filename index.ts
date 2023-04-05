@@ -22,7 +22,6 @@ import remarkFrontmatter from 'remark-frontmatter';
 import rrule from 'rrule';
 import yaml from 'yaml';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention -- This fails with the Vitest tests rrule is still not pure ESM
 const { rrulestr } = rrule;
 
 const {
