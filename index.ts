@@ -221,6 +221,7 @@ const eventsByStartDates: EventsByStartDate = {};
 
 for (const event of sortedNonHolidayEvents) {
   const eventStartOfDay = startOfDay(event.start).toISOString();
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- False positive when assigning to index signature TODO: Remove when this PR is merged and released https://github.com/typescript-eslint/typescript-eslint/pull/6762
   eventsByStartDates[eventStartOfDay] ??= [];
   eventsByStartDates[eventStartOfDay]!.push({
     event: event,
@@ -398,9 +399,7 @@ for (const [startDate, events] of Object.entries(eventsByStartDates)) {
         // so the end date can be adjusted if necessary
         const recalculatedWeekendOrHolidayDaysDuringRange =
           availableDates.filter(
-            // ESLint rule disabled because it is a false positive for this function
-            // https://github.com/eslint/eslint/issues/5044
-            // eslint-disable-next-line no-loop-func
+            // eslint-disable-next-line no-loop-func -- False positive for this function https://github.com/eslint/eslint/issues/5044
             ({ isWeekendOrHoliday, date }) => {
               return (
                 eventNewStart.getTime() <= date.getTime() &&
