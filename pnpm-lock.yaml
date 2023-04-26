@@ -26,8 +26,8 @@ dependencies:
     specifier: 2.7.2
     version: 2.7.2
   yaml:
-    specifier: 2.2.1
-    version: 2.2.1
+    specifier: 2.2.2
+    version: 2.2.2
 
 devDependencies:
   '@next/eslint-plugin-next':
@@ -5815,8 +5815,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /yaml@2.2.1:
-    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+  /yaml@2.2.2:
+    resolution: {integrity: sha512-CBKFWExMn46Foo4cldiChEzn7S7SRV+wqiluAb6xmueD/fGyRHIhX8m14vVGgeFWjN540nKCNVj6P21eQjgTuA==}
     engines: {node: '>= 14'}
     dev: false
 
