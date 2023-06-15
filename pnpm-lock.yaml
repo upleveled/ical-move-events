@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -12,8 +12,8 @@ dependencies:
     specifier: 7.1.1
     version: 7.1.1
   ical-generator:
-    specifier: 4.1.0
-    version: 4.1.0(@types/node@20.2.5)(rrule@2.7.2)
+    specifier: 5.0.0
+    version: 5.0.0(@types/node@20.2.5)(rrule@2.7.2)
   node-ical:
     specifier: 0.16.0
     version: 0.16.0
@@ -2561,9 +2561,9 @@ packages:
     engines: {node: '>=14.18.0'}
     dev: false
 
-  /ical-generator@4.1.0(@types/node@20.2.5)(rrule@2.7.2):
-    resolution: {integrity: sha512-5GrFDJ8SAOj8cB9P1uEZIfKrNxSZ1R2eOQfZePL+CtdWh4RwNXWe8b0goajz+Hu37vcipG3RVldoa2j57Y20IA==}
-    engines: {node: ^14.8.0 || >=16.0.0}
+  /ical-generator@5.0.0(@types/node@20.2.5)(rrule@2.7.2):
+    resolution: {integrity: sha512-o0klZ3J0IOAD5VitK2bNVBPSrSPEe+uglCk9zBa2MSYbKxPvjWlHjbaZaNWWC8MOqpkNBF+viteFExyjt1S5XQ==}
+    engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       '@touch4it/ical-timezones': '>=1.6.0'
       '@types/luxon': '>= 1.26.0'
