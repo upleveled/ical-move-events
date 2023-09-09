@@ -1,3 +1,7 @@
+# UNMAINTAINED
+
+This project is no longer maintained as of September 2023
+
 # @upleveled/ical-move-events
 
 Move all events in an iCalendar file (`.ics` file) to a new starting date.
